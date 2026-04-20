@@ -321,12 +321,12 @@
 
             <ul class="nav flex-column w-100 gap-2 flex-grow-1">
                 <li class="nav-item">
-                    <a href="{{ route('mechanic.dashboard') }}" class="nav-link active">
+                    <a href="{{ route('mechanic.tasks') }}" class="nav-link active">
                         <img src="{{ asset('images/task_icon.png') }}" alt=""> My Assigned Tasks
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('mechanic.inprogress.index') }}" class="nav-link">
+                    <a href="{{ route('mechanic.inprogress') }}" class="nav-link">
                         <img src="{{ asset('images/inprogress_icon.png') }}" alt=""> In Progress
                     </a>
                 </li>
