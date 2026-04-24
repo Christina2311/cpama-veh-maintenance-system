@@ -235,49 +235,50 @@
         }
 
         /* ── MODALS ── */
-        .modal-card { 
-            background: linear-gradient(135deg, #6160A2, #8B8AC0); 
-            border-radius: 16px; 
-            border: none; 
+        .modal-card {
+            background: white;
+            border-radius: 12px;
+            border: none;
         }
-
-        .modal-card .modal-header { 
-            border-bottom: none; 
-            padding: 24px 24px 8px; 
+        .modal-card .modal-header {
+            background: #0D0D32;
+            border-radius: 12px 12px 0 0;
+            border-bottom: none;
+            padding: 16px 20px;
         }
-
-        .modal-card .modal-title { 
-            font-size: 20px; 
-            font-weight: 800; 
-            color: white; 
+        .modal-card .modal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
         }
-
-        .modal-card .modal-body { 
-            padding: 16px 24px; 
+        .modal-card .modal-body {
+            padding: 20px 24px;
+            background: white;
         }
-
-        .modal-card .modal-footer { 
-            border-top: none; 
-            padding: 8px 24px 24px; 
+        .modal-card .modal-footer {
+            border-top: 1px solid #eee;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 0 0 12px 12px;
         }
-        
-        .modal-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.85); margin-bottom: 6px; }
+        .modal-card .btn-close { filter: invert(1) brightness(2); }
+        .modal-label { font-size: 12px; font-weight: 600; color: #0D0D32; margin-bottom: 6px; }
         .modal-input {
-            width: 100%; padding: 10px 12px; border-radius: 8px; border: none;
-            background: rgba(255,255,255,0.9); font-size: 13px; color: #333;
+            width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #dee2e6;
+            background: #f8f9fa; font-size: 13px; color: #333;
             outline: none; box-sizing: border-box;
         }
-        .modal-input:focus { background: white; }
+        .modal-input:focus { background: white; border-color: #6160A2; }
         .modal-select {
-            width: 100%; padding: 10px 12px; border-radius: 8px; border: none;
-            background: rgba(255,255,255,0.9); font-size: 13px; color: #333;
+            width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #dee2e6;
+            background: #f8f9fa; font-size: 13px; color: #333;
             outline: none; cursor: pointer; appearance: none;
         }
 
         /* ── VIEW MODAL ── */
-        .view-card { border-radius: 16px; border: none; }
-        .view-card .modal-header { background: #0D0D32; border-radius: 16px 16px 0 0; padding: 20px 24px; border-bottom: none; }
-        .view-card .modal-title { color: white; font-size: 18px; font-weight: 800; }
+        .view-card { border-radius: 12px; border: none; }
+        .view-card .modal-header { background: #0D0D32; border-radius: 12px 12px 0 0; padding: 16px 20px; border-bottom: none; }
+        .view-card .modal-title { color: white; font-size: 16px; font-weight: 700; }
         .view-card .modal-body { padding: 20px 24px; }
         .view-label { font-size: 11px; font-weight: 700; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
         .view-input {
@@ -287,8 +288,9 @@
 
         /* DIALOG MODALS */
         .dialog-card { border-radius: 12px; border: none; }
-        .dialog-card .modal-header { border-bottom: 1px solid #eee; padding: 16px 20px; }
-        .dialog-card .modal-title { font-size: 16px; font-weight: 700; color: #0D0D32; }
+        .dialog-card .modal-header { background: #0D0D32; border-radius: 12px 12px 0 0; border-bottom: none; padding: 16px 20px; }
+        .dialog-card .modal-title { font-size: 16px; font-weight: 700; color: white; }
+        .dialog-card .btn-close { filter: invert(1) brightness(2); }
         .dialog-card .modal-body { font-size: 13px; color: #444; padding: 16px 20px; }
         .dialog-card .modal-footer { border-top: 1px solid #eee; padding: 12px 20px; }
         .btn-cancel-sm {
@@ -520,6 +522,7 @@
             <div class="modal-content modal-card">
                 <div class="modal-header">
                     <h5 class="modal-title">Assign to Team</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="modal-label">Select Mechanic</div>

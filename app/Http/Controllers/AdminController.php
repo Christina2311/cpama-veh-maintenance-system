@@ -283,6 +283,40 @@ class AdminController extends Controller
     }
 
     // ──────────────────────────────────────────
+    // MAINTENANCE — LIST
+    // ──────────────────────────────────────────
+    public function maintenance(Request $request)
+    {
+        $query = Task::with(['appointment.vehicle', 'appointment.customer', 'service', 'mechanic']);
+
+        if ($request->vehicle_id) {
+            $query->whereHas('appointment', fn($q) => $q->where('vehicle_id', $request->vehicle_id));
+        }
+
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->year && $request->month && $request->day) {
+            $date = $request->year . '-' . str_pad($request->month, 2, '0', STR_PAD_LEFT) . '-' . str_pad($request->day, 2, '0', STR_PAD_LEFT);
+            $query->whereHas('appointment', fn($q) => $q->whereDate('appointment_date', $date));
+        }
+
+        $tasks    = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+        $vehicles = Vehicle::orderBy('make')->get();
+
+        return view('admin.maintenance.index', compact('tasks', 'vehicles'));
+    }
+
+    public function updateMaintenanceStatus(Request $request, Task $task)
+    {
+        $request->validate(['status' => 'required|in:assigned,in-progress,completed']);
+        $task->update(['status' => $request->status]);
+        return redirect()->route('admin.maintenance')->with('success', 'Status updated.');
+    }
+    
+    // ──────────────────────────────────────────
+
     // VEHICLE MANAGEMENT — LIST
     // ──────────────────────────────────────────
     public function vehicles(Request $request)

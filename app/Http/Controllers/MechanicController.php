@@ -50,9 +50,7 @@ class MechanicController extends Controller
         return view('mechanic.dashboard', compact('tasks', 'mechanics'));
     }
 
-    // ──────────────────────────────────────────
     // IN PROGRESS TASKS
-    // ──────────────────────────────────────────
     public function inProgress()
     {
         $tasks = Task::with(['appointment.vehicle', 'service'])
@@ -69,9 +67,7 @@ class MechanicController extends Controller
         return view('mechanic.inprogress.index', compact('tasks', 'mechanics'));
     }
 
-    // ──────────────────────────────────────────
     // COMPLETED TASKS
-    // ──────────────────────────────────────────
     public function completed()
     {
         $tasks = Task::with(['appointment.vehicle', 'service'])
@@ -83,12 +79,12 @@ class MechanicController extends Controller
         return view('mechanic.completed.index', compact('tasks'));
     }
 
-    // ──────────────────────────────────────────
     // TEAM OVERVIEW
-    // ──────────────────────────────────────────
     public function team()
     {
-        $mechanics = User::where('role', 'mechanic')
+        $mechanicId = Auth::id();
+
+        $mechanics = User::whereIn('role', ['mechanic', 'senior_mechanic'])
             ->where('status', 'active')
             ->get()
             ->map(function ($mechanic) {
@@ -98,12 +94,17 @@ class MechanicController extends Controller
                 return $mechanic;
             });
 
-        return view('mechanic.team.index', compact('mechanics'));
+        $delegatedTasks = Task::with(['appointment.vehicle', 'service', 'mechanic'])
+            ->where('assigned_by', $mechanicId)
+            ->where('mechanic_id', '!=', $mechanicId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('mechanic.team.index', compact('mechanics', 'delegatedTasks'));
     }
 
-    // ──────────────────────────────────────────
+
     // TEAM REPORTS
-    // ──────────────────────────────────────────
     public function reports()
     {
         $totalTasks     = Task::count();
@@ -114,21 +115,31 @@ class MechanicController extends Controller
         return view('mechanic.reports.index', compact('totalTasks', 'completedTasks', 'inProgress', 'assigned'));
     }
 
-    // ──────────────────────────────────────────
-    // CUSTOMER VEHICLES
-    // ──────────────────────────────────────────
-    public function vehicles()
-    {
-        $vehicles = Vehicle::with('owner')
-            ->orderBy('created_at', 'desc')
-            ->get();
 
-        return view('mechanic.vehicles.index', compact('vehicles'));
+    // CUSTOMER VEHICLES
+    // CUSTOMER VEHICLES
+    public function vehicles(Request $request)
+    {
+        $query = Vehicle::with('owner')->orderBy('make');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('make',          'like', "%{$search}%")
+                  ->orWhere('model',        'like', "%{$search}%")
+                  ->orWhere('license_plate','like', "%{$search}%")
+                  ->orWhere('vin',          'like', "%{$search}%")
+                  ->orWhereHas('owner', fn($u) => $u->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        $vehicles = $query->paginate(15)->withQueryString();
+
+        return view('mechanic.customervehicles.index', compact('vehicles'));
     }
 
-    // ──────────────────────────────────────────
+
     // ASSIGN TASK TO TEAM (page)
-    // ──────────────────────────────────────────
     public function assign()
     {
         $mechanics = User::where('role', 'mechanic')
@@ -144,9 +155,7 @@ class MechanicController extends Controller
         return view('mechanic.assign.index', compact('mechanics', 'tasks'));
     }
 
-    // ──────────────────────────────────────────
     // UPDATE TASK STATUS
-    // ──────────────────────────────────────────
     public function updateTaskStatus(Request $request, $taskId)
     {
         $task = Task::findOrFail($taskId);
@@ -175,9 +184,8 @@ class MechanicController extends Controller
         return redirect()->route('mechanic.tasks')->with('success', 'Task status updated.');
     }
 
-    // ──────────────────────────────────────────
+
     // ASSIGN TASK TO ANOTHER MECHANIC
-    // ──────────────────────────────────────────
     public function assignTask(Request $request, $taskId)
     {
         $request->validate([

@@ -201,7 +201,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.maintenance') }}" class="nav-link">
                     <img src="{{ asset('images/maintenance_icon.png') }}" alt=""> Maintenance
                 </a>
             </li>
