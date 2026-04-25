@@ -366,11 +366,7 @@
                         <img src="{{ asset('images/customer_vehicle_icon.png') }}" alt=""> Customer Vehicles
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('mechanic.assign') }}" class="nav-link">
-                        <img src="{{ asset('images/assign_task_icon.png') }}" alt=""> Assign Task to Team
-                    </a>
-                </li>
+    
                 @endif
             </ul>
 

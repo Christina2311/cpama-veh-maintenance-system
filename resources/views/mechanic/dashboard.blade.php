@@ -353,11 +353,7 @@
                         <img src="{{ asset('images/customer_vehicle_icon.png') }}" alt=""> Customer Vehicles
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('mechanic.assign') }}" class="nav-link">
-                        <img src="{{ asset('images/assign_task_icon.png') }}" alt=""> Assign Task to Team
-                    </a>
-                </li>
+    
                 @endif
             </ul>
 
@@ -431,7 +427,13 @@
 
                         {{-- Assign to Team — ONLY for Senior Mechanics --}}
                         @if(auth()->user()->is_senior)
-                            <button class="btn-assign" onclick="openAssignModal({{ $task->id }})">
+                            <button class="btn-assign" onclick="openAssignModal(
+                                {{ $task->id }},
+                                '{{ addslashes(($task->appointment->vehicle->make ?? '') . ' ' . ($task->appointment->vehicle->model ?? '') . ' (' . ($task->appointment->vehicle->license_plate ?? '') . ')') }}',
+                                '{{ addslashes($task->service->service_name ?? '—') }}',
+                                '{{ ucfirst($task->priority ?? 'Medium') }}',
+                                '{{ $task->appointment->appointment_date ? \Carbon\Carbon::parse($task->appointment->appointment_date)->format('Y-m-d') : '—' }}'
+                            )">
                                 Assign to Team
                             </button>
                         @endif
@@ -525,6 +527,27 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
+                    <!-- Task summary -->
+                    <div style="background:#f8f9fa; border-radius:10px; padding:12px 16px; margin-bottom:16px;">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div style="font-size:10px; color:#6c757d; font-weight:600; margin-bottom:2px;">Vehicle:</div>
+                                <div style="font-size:12px; font-weight:700; color:#0D0D32;" id="atm_vehicle">—</div>
+                            </div>
+                            <div class="col-6">
+                                <div style="font-size:10px; color:#6c757d; font-weight:600; margin-bottom:2px;">Service Type:</div>
+                                <div style="font-size:12px; font-weight:700; color:#0D0D32;" id="atm_service">—</div>
+                            </div>
+                            <div class="col-6">
+                                <div style="font-size:10px; color:#6c757d; font-weight:600; margin-bottom:2px;">Priority:</div>
+                                <div style="font-size:12px; font-weight:700; color:#0D0D32;" id="atm_priority">—</div>
+                            </div>
+                            <div class="col-6">
+                                <div style="font-size:10px; color:#6c757d; font-weight:600; margin-bottom:2px;">Due Date:</div>
+                                <div style="font-size:12px; font-weight:700; color:#0D0D32;" id="atm_due">—</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="modal-label">Select Mechanic</div>
                     <select id="assign_mechanic" class="modal-select mb-3">
                         <option value="">Select a mechanic...</option>
@@ -633,8 +656,18 @@
             }
 
             // ASSIGN TO TEAM 
-            function openAssignModal(taskId) {
+            function openAssignModal(taskId, vehicle, service, priority, dueDate) {
                 currentTaskId = taskId;
+                // Pre-fill summary
+                const vEl = document.getElementById('atm_vehicle');
+                const sEl = document.getElementById('atm_service');
+                const pEl = document.getElementById('atm_priority');
+                const dEl = document.getElementById('atm_due');
+                if (vEl) vEl.textContent = vehicle  || '—';
+                if (sEl) sEl.textContent = service  || '—';
+                if (pEl) pEl.textContent = priority || 'Medium';
+                if (dEl) dEl.textContent = dueDate  || '—';
+                // Reset fields
                 document.getElementById('assign_mechanic').value = '';
                 document.getElementById('assign_notes').value    = '';
                 document.getElementById('err_mechanic').textContent = '';
@@ -684,5 +717,6 @@
             }
         </script>
         <!--------------------------------------------------------------------------->
-    </body>
+    
+</body>
 </html>

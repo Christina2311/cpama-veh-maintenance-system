@@ -105,18 +105,125 @@ class MechanicController extends Controller
 
 
     // TEAM REPORTS
-    public function reports()
+    public function reports(Request $request)
     {
-        $totalTasks     = Task::count();
-        $completedTasks = Task::where('status', 'completed')->count();
-        $inProgress     = Task::where('status', 'in-progress')->count();
-        $assigned       = Task::where('status', 'assigned')->count();
+        // ── DETERMINE DATE RANGE ──
+        $period = $request->get('period', 'week');
+        $from   = $request->get('from');
+        $to     = $request->get('to');
 
-        return view('mechanic.reports.index', compact('totalTasks', 'completedTasks', 'inProgress', 'assigned'));
+        if ($from && $to) {
+            // Custom range
+            $start       = \Carbon\Carbon::parse($from)->startOfDay();
+            $end         = \Carbon\Carbon::parse($to)->endOfDay();
+            $periodLabel = \Carbon\Carbon::parse($from)->format('M d') . ' – ' . \Carbon\Carbon::parse($to)->format('M d, Y');
+            $period      = 'custom';
+        } else {
+            switch ($period) {
+                case 'month':
+                    $start       = now()->startOfMonth();
+                    $end         = now()->endOfMonth();
+                    $periodLabel = now()->format('F Y');
+                    break;
+                case '3months':
+                    $start       = now()->subMonths(3)->startOfDay();
+                    $end         = now()->endOfDay();
+                    $periodLabel = 'Last 3 Months';
+                    break;
+                case 'year':
+                    $start       = now()->startOfYear();
+                    $end         = now()->endOfYear();
+                    $periodLabel = 'Year ' . now()->year;
+                    break;
+                default: // week
+                    $period      = 'week';
+                    $start       = now()->startOfWeek();
+                    $end         = now()->endOfWeek();
+                    $periodLabel = 'This Week (' . $start->format('M d') . ' – ' . $end->format('M d, Y') . ')';
+                    break;
+            }
+        }
+
+        // ── SUMMARY STATS (period-scoped) ──
+        $totalTasks  = Task::whereBetween('assigned_at', [$start, $end])->count();
+        $inProgress  = Task::where('status', 'in-progress')->whereBetween('assigned_at', [$start, $end])->count();
+        $assigned    = Task::where('status', 'assigned')->whereBetween('assigned_at', [$start, $end])->count();
+        $totalVehicles  = \App\Models\Vehicle::count();
+        $activeMechanics = \App\Models\User::whereIn('role', ['mechanic', 'senior_mechanic'])
+                            ->where('status', 'active')->count();
+
+        // Average completion time (minutes) in period
+        $avgMinutes = (int) Task::where('status', 'completed')
+            ->whereNotNull('started_at')
+            ->whereNotNull('completed_at')
+            ->whereBetween('completed_at', [$start, $end])
+            ->selectRaw('AVG(TIMESTAMPDIFF(MINUTE, started_at, completed_at)) as avg_mins')
+            ->value('avg_mins');
+
+        // ── REVENUE ──
+        $completedAppointments = \App\Models\Appointment::where('status', 'completed')
+            ->whereBetween('appointment_date', [$start, $end])
+            ->count();
+
+        $totalRevenue = (float) \App\Models\Appointment::where('status', 'completed')
+            ->whereBetween('appointment_date', [$start, $end])
+            ->sum('total_amount');
+
+        // ── PER-MECHANIC STATS ──
+        $mechanicStats = \App\Models\User::whereIn('role', ['mechanic', 'senior_mechanic'])
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($mechanic) use ($start, $end) {
+                $base = Task::where('mechanic_id', $mechanic->id)
+                            ->whereBetween('assigned_at', [$start, $end]);
+
+                $completed  = (clone $base)->where('status', 'completed')->count();
+                $inprogress = (clone $base)->where('status', 'in-progress')->count();
+                $assigned   = (clone $base)->where('status', 'assigned')->count();
+
+                $totalMinutes = (int) Task::where('mechanic_id', $mechanic->id)
+                    ->where('status', 'completed')
+                    ->whereNotNull('started_at')
+                    ->whereNotNull('completed_at')
+                    ->whereBetween('completed_at', [$start, $end])
+                    ->selectRaw('SUM(TIMESTAMPDIFF(MINUTE, started_at, completed_at)) as total_mins')
+                    ->value('total_mins');
+
+                return [
+                    'name'          => $mechanic->name,
+                    'completed'     => $completed,
+                    'inprogress'    => $inprogress,
+                    'assigned'      => $assigned,
+                    'total_minutes' => $totalMinutes,
+                ];
+            });
+
+        // ── SERVICE BREAKDOWN ──
+        $serviceBreakdown = \App\Models\Service::leftJoin('tasks', function ($join) use ($start, $end) {
+                $join->on('tasks.service_id', '=', 'services.id')
+                     ->where('tasks.status', 'completed')
+                     ->whereBetween('tasks.completed_at', [$start, $end]);
+            })
+            ->selectRaw('services.service_name, COUNT(tasks.id) as count')
+            ->groupBy('services.id', 'services.service_name')
+            ->orderByDesc('count')
+            ->get()
+            ->map(function ($s) {
+                return (object) [
+                    'service_name' => $s->service_name,
+                    'count'        => (int) $s->count,
+                ];
+            });
+
+        return view('mechanic.teamreports.index', compact(
+            'period', 'periodLabel',
+            'totalTasks', 'totalVehicles', 'inProgress', 'assigned',
+            'avgMinutes', 'activeMechanics',
+            'totalRevenue', 'completedAppointments',
+            'mechanicStats', 'serviceBreakdown'
+        ));
     }
 
-
-    // CUSTOMER VEHICLES
     // CUSTOMER VEHICLES
     public function vehicles(Request $request)
     {
