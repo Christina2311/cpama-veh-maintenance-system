@@ -376,6 +376,41 @@
             font-size: 13px;
         }
 
+        /* ── PAGINATION ── */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 24px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .page-btn {
+            background: none;
+            border: 1px solid var(--bg-secondary);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--bg-primary);
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.15s;
+        }
+        .page-btn:hover, .page-btn.active { background: var(--bg-primary); color: white; border-color: var(--bg-primary); }
+        .page-btn:disabled { opacity: 0.4; cursor: default; }
+
+           /* Pagination stacks */
+            .pagination-bar {
+                flex-direction: column !important;
+                gap: 8px !important;
+                align-items: flex-start !important;
+            }
+
+
         /* ── MODAL ── */
         .modal-card { background: white; border-radius: 12px; border: none; }
         .modal-card .modal-header { background: var(--bg-primary); border-radius: 12px 12px 0 0; border-bottom: none; padding: 16px 20px; }
@@ -704,6 +739,31 @@
                     @endforelse
                 </tbody>
             </table>
+
+            @if($tasks instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                <div class="pagination-bar">
+                    <div>Showing {{ $tasks->firstItem() }}–{{ $tasks->lastItem() }} of {{ $tasks->total() }} records</div>
+                    <div class="d-flex gap-1">
+                        @if($tasks->onFirstPage())
+                            <button class="page-btn" disabled>‹</button>
+                        @else
+                            <a href="{{ $tasks->previousPageUrl() }}" class="page-btn">‹</a>
+                        @endif
+
+                        @foreach($tasks->getUrlRange(1, $tasks->lastPage()) as $page => $url)
+                            <a href="{{ $url }}" class="page-btn {{ $tasks->currentPage() === $page ? 'active' : '' }}">
+                                {{ $page }}
+                            </a>
+                        @endforeach
+
+                        @if($tasks->hasMorePages())
+                            <a href="{{ $tasks->nextPageUrl() }}" class="page-btn">›</a>
+                        @else
+                            <button class="page-btn" disabled>›</button>
+                        @endif
+                    </div>
+                </div>
+            @endif
         </div>
 
         <!-- ══ DELEGATED TASKS ══ -->

@@ -65,7 +65,13 @@ class AdminController extends Controller
         $query = User::query();
 
         if ($request->filled('role')) {
-            $query->where('role', $request->role);
+            if ($request->role === 'archived') {
+                // "Archived" is not a role — filter by inactive status instead
+                $query->where('status', 'inactive');
+            } else {
+                $query->where('role', $request->role)
+                      ->where('status', 'active');
+            }
         }
 
         if ($request->filled('search')) {

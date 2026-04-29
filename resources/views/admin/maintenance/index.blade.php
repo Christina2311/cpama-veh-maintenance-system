@@ -201,19 +201,16 @@
 
         /* ── STATUS BADGES ── */
         .badge-status {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 13px;
+            font-weight: 600;
             white-space: nowrap;
         }
 
-        .badge-completed  { background: #d1fae5; color: #065f46; }
-        .badge-inprogress { background: #dbeafe; color: #1e40af; }
-        .badge-assigned   { background: #fef9c3; color: #92400e; }
-        .badge-scheduled  { background: #ede9fe; color: #5b21b6; }
-        .badge-cancelled  { background: #fee2e2; color: #991b1b; }
+        .badge-completed  { color: #065f46; }
+        .badge-inprogress { color: #1e40af; }
+        .badge-assigned   { color: #92400e; }
+        .badge-scheduled  { color: #5b21b6; }
+        .badge-cancelled  { color: #991b1b; }
 
         /* ── ACTION BUTTONS ── */
         .btn-action {

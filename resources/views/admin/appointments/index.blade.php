@@ -88,7 +88,7 @@
             background: rgba(255,255,255,0.92); border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;
         }
-        .table-scroll { overflow-y: auto; overflow-x: auto; max-height: 60vh; border-radius: 8px; }
+        .table-scroll { overflow-y: auto; overflow-x: auto; max-height: 52vh; border-radius: 8px; }
         .table { margin: 0; font-size: 13px; }
         .table thead th {
             background: #E3E3E3; color: #0D0D32; font-weight: 700; font-size: 12px;
@@ -98,12 +98,12 @@
         .table tbody tr:hover { background-color: rgba(97, 96, 162, 0.06); }
         .table tbody td { padding: 12px 16px; vertical-align: middle; border: none; color: #0D0D32; }
  
-        .badge-status { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; }
-        .badge-pending    { background: #fef9c3; color: #854d0e; }
-        .badge-confirmed  { background: #dbeafe; color: #1e40af; }
-        .badge-in-progress{ background: #ede9fe; color: #5b21b6; }
-        .badge-completed  { background: #d1fae5; color: #065f46; }
-        .badge-cancelled  { background: #fee2e2; color: #991b1b; }
+        .badge-status { font-size: 13px; font-weight: 600; }
+        .badge-pending    { color: #854d0e; }
+        .badge-confirmed  { color: #1e40af; }
+        .badge-in-progress{ color: #5b21b6; }
+        .badge-completed  { color: #065f46; }
+        .badge-cancelled  { color: #991b1b; }
  
         .action-btn {
             width: 32px; height: 32px; border-radius: 6px; border: none;
@@ -122,6 +122,22 @@
         .book-btn:hover { background: #1a1a5e; }
  
         .empty-state { text-align: center; padding: 30px; color: #6c757d; font-size: 13px; }
+
+        /* ── PAGINATION ── */
+        .pagination-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 20px; border-top: 1px solid #f0f0f0;
+            font-size: 12px; color: #6c757d;
+        }
+        .page-btns { display: flex; gap: 4px; }
+        .page-btn {
+            background: none; border: 1px solid #dee2e6; border-radius: 6px;
+            padding: 4px 10px; font-size: 12px; font-weight: 600;
+            color: #0D0D32; cursor: pointer; transition: background-color 0.15s;
+            text-decoration: none; display: inline-flex; align-items: center;
+        }
+        .page-btn:hover, .page-btn.active { background: #0D0D32; color: white; border-color: #0D0D32; }
+        .page-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
  
         /* ── MODALS ── */
         .modal-card { background: linear-gradient(135deg, #6160A2, #8B8AC0); border-radius: 16px; border: none; }
@@ -465,7 +481,7 @@
                                 <td>
                                     @if($appt->vehicle)
                                         {{ $appt->vehicle->make ?? '' }} {{ $appt->vehicle->model ?? '' }}
-                                        <div style="font-size:11px; color:#6c757d;">{{ $appt->vehicle->plate_number ?? '' }}</div>
+                                        <div style="font-size:11px; color:#6c757d;">{{ $appt->vehicle->license_plate ?? '' }}</div>
                                     @else
                                         —
                                     @endif
@@ -493,9 +509,11 @@
                                     {{-- View Details --}}
                                     <button class="action-btn btn-view ms-1" title="View Details"
                                         onclick="openViewModal(
+                                            {{ $appt->id }},
                                             '{{ addslashes($appt->customer->name ?? '—') }}',
+                                            '{{ addslashes($appt->customer->valid_id ?? 'Not provided') }}',
                                             '{{ addslashes(($appt->vehicle->make ?? '') . ' ' . ($appt->vehicle->model ?? '')) }}',
-                                            '{{ addslashes($appt->vehicle->plate_number ?? '—') }}',
+                                            '{{ addslashes($appt->vehicle->license_plate ?? '—') }}',
                                             '{{ addslashes($appt->appointmentServices ? $appt->appointmentServices->map(fn($s) => $s->service->service_name ?? '')->join(', ') : '—') }}',
                                             '{{ $appt->appointment_date ? \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') : '—' }}',
                                             '{{ $appt->appointment_time ? \Carbon\Carbon::parse($appt->appointment_time)->format('h:i A') : '—' }}',
@@ -514,6 +532,35 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Pagination --}}
+            @if($appointments->hasPages())
+            <div class="pagination-bar">
+                <div class="page-info">
+                    Showing {{ $appointments->firstItem() }}–{{ $appointments->lastItem() }} of {{ $appointments->total() }} records
+                </div>
+                <div class="page-btns">
+                    @if($appointments->onFirstPage())
+                        <button class="page-btn" disabled>‹</button>
+                    @else
+                        <a href="{{ $appointments->previousPageUrl() }}" class="page-btn">‹</a>
+                    @endif
+
+                    @foreach($appointments->getUrlRange(1, $appointments->lastPage()) as $page => $url)
+                        <a href="{{ $url }}"
+                           class="page-btn {{ $appointments->currentPage() === $page ? 'active' : '' }}">
+                            {{ $page }}
+                        </a>
+                    @endforeach
+
+                    @if($appointments->hasMorePages())
+                        <a href="{{ $appointments->nextPageUrl() }}" class="page-btn">›</a>
+                    @else
+                        <button class="page-btn" disabled>›</button>
+                    @endif
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>
@@ -661,8 +708,16 @@
             <div class="modal-body">
                 <div class="row g-3">
                     <div class="col-6">
+                        <div class="view-label">Appointment ID</div>
+                        <div class="view-value" id="view_id">—</div>
+                    </div>
+                    <div class="col-6">
                         <div class="view-label">Customer</div>
                         <div class="view-value" id="view_customer">—</div>
+                    </div>
+                    <div class="col-6">
+                        <div class="view-label">Valid ID</div>
+                        <div class="view-value" id="view_valid_id">—</div>
                     </div>
                     <div class="col-6">
                         <div class="view-label">Vehicle</div>
@@ -751,7 +806,7 @@
         const vehicleSelect = document.getElementById('book_vehicle');
         vehicleSelect.innerHTML = '<option value="">Select Vehicle</option>';
         vehicles.forEach(v => {
-            vehicleSelect.innerHTML += `<option value="${v.id}">${v.make ?? ''} ${v.model ?? ''} - ${v.plate_number ?? ''}</option>`;
+            vehicleSelect.innerHTML += `<option value="${v.id}">${v.make ?? ''} ${v.model ?? ''} - ${v.license_plate ?? ''}</option>`;
         });
     }
  
@@ -804,9 +859,11 @@
     }
  
     // ── VIEW DETAILS ──
-    function openViewModal(customer, vehicle, plate, service, date, time, status, notes) {
-        document.getElementById('view_customer').textContent = customer;
-        document.getElementById('view_vehicle').textContent  = vehicle.trim() || '—';
+    function openViewModal(id, customer, validId, vehicle, plate, service, date, time, status, notes) {
+        document.getElementById('view_id').textContent        = '#' + id;
+        document.getElementById('view_customer').textContent  = customer;
+        document.getElementById('view_valid_id').textContent  = validId;
+        document.getElementById('view_vehicle').textContent   = vehicle.trim() || '—';
         document.getElementById('view_plate').textContent    = plate;
         document.getElementById('view_service').textContent  = service;
         document.getElementById('view_date').textContent     = date;

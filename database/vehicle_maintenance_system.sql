@@ -141,6 +141,115 @@ INSERT INTO users (name, email, password, phone, role, status, last_login) VALUE
 -- ============================================
 
 
+-- ADD VALID ID COLUMN TO USERS TABLE
+-- ============================================
+ALTER TABLE users ADD COLUMN valid_id VARCHAR(100) NULL AFTER phone;
+
+-- UPDATE VALID ID FOR ALL CUSTOMERS
+-- (IDs assigned in the same order customers were inserted, starting from user id 14)
+UPDATE users SET valid_id = 'Passport - P1234567A'       WHERE email = 'john.smith@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00112233' WHERE email = 'emma.johnson@email.com';
+UPDATE users SET valid_id = 'National ID - NID-44556677'  WHERE email = 'michael.williams@email.com';
+UPDATE users SET valid_id = 'Passport - P2345678B'        WHERE email = 'olivia.brown@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00223344' WHERE email = 'james.davis@email.com';
+UPDATE users SET valid_id = 'Postal ID - POST-11223344'   WHERE email = 'sophia.miller@email.com';
+UPDATE users SET valid_id = 'Passport - P3456789C'        WHERE email = 'william.wilson@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00334455' WHERE email = 'ava.moore@email.com';
+UPDATE users SET valid_id = 'National ID - NID-55667788'  WHERE email = 'benjamin.taylor@email.com';
+UPDATE users SET valid_id = 'Passport - P4567890D'        WHERE email = 'isabella.anderson@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00445566' WHERE email = 'lucas.thomas@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-11223344'       WHERE email = 'mia.jackson@email.com';
+UPDATE users SET valid_id = 'Passport - P5678901E'        WHERE email = 'henry.white@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00556677' WHERE email = 'charlotte.harris@email.com';
+UPDATE users SET valid_id = 'National ID - NID-66778899'  WHERE email = 'alexander.martin@email.com';
+UPDATE users SET valid_id = 'Passport - P6789012F'        WHERE email = 'amelia.thompson@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00667788' WHERE email = 'sebastian.garcia@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-12345678'   WHERE email = 'evelyn.martinez@email.com';
+UPDATE users SET valid_id = 'Passport - P7890123G'        WHERE email = 'jack.robinson@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00778899' WHERE email = 'harper.clark@email.com';
+UPDATE users SET valid_id = 'National ID - NID-77889900'  WHERE email = 'daniel.rodriguez@email.com';
+UPDATE users SET valid_id = 'Passport - P8901234H'        WHERE email = 'ella.lewis@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00889900' WHERE email = 'matthew.lee@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-22334455'       WHERE email = 'avery.walker@email.com';
+UPDATE users SET valid_id = 'Passport - P9012345I'        WHERE email = 'jackson.hall@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-00990011' WHERE email = 'scarlett.allen@email.com';
+UPDATE users SET valid_id = 'National ID - NID-88990011'  WHERE email = 'david.young@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-23456789'   WHERE email = 'sofia.hernandez@email.com';
+UPDATE users SET valid_id = 'Passport - P0123456J'        WHERE email = 'joseph.king@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01001122' WHERE email = 'grace.wright@email.com';
+UPDATE users SET valid_id = 'Postal ID - POST-22334455'   WHERE email = 'samuel.lopez@email.com';
+UPDATE users SET valid_id = 'Passport - P1234567K'        WHERE email = 'chloe.hill@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01112233' WHERE email = 'carter.scott@email.com';
+UPDATE users SET valid_id = 'National ID - NID-99001122'  WHERE email = 'lily.green@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-34567890'   WHERE email = 'wyatt.adams@email.com';
+UPDATE users SET valid_id = 'Passport - P2345678L'        WHERE email = 'victoria.baker@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01223344' WHERE email = 'luke.gonzalez@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-33445566'       WHERE email = 'zoe.nelson@email.com';
+UPDATE users SET valid_id = 'Passport - P3456789M'        WHERE email = 'owen.carter@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01334455' WHERE email = 'penelope.mitchell@email.com';
+UPDATE users SET valid_id = 'National ID - NID-00112233'  WHERE email = 'gabriel.perez@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-45678901'   WHERE email = 'layla.roberts@email.com';
+UPDATE users SET valid_id = 'Passport - P4567890N'        WHERE email = 'nathan.turner@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01445566' WHERE email = 'aria.phillips@email.com';
+UPDATE users SET valid_id = 'Postal ID - POST-33445566'   WHERE email = 'isaac.campbell@email.com';
+UPDATE users SET valid_id = 'Passport - P5678901O'        WHERE email = 'ellie.parker@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01556677' WHERE email = 'julian.evans@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-44556677'       WHERE email = 'nora.edwards@email.com';
+UPDATE users SET valid_id = 'National ID - NID-11223344'  WHERE email = 'levi.collins@email.com';
+UPDATE users SET valid_id = 'Passport - P6789012P'        WHERE email = 'riley.stewart@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01667788' WHERE email = 'aaron.sanchez@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-56789012'   WHERE email = 'hazel.morris@email.com';
+UPDATE users SET valid_id = 'Passport - P7890123Q'        WHERE email = 'lincoln.rogers@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01778899' WHERE email = 'eleanor.reed@email.com';
+UPDATE users SET valid_id = 'National ID - NID-22334455'  WHERE email = 'hudson.cook@email.com';
+UPDATE users SET valid_id = 'Postal ID - POST-44556677'   WHERE email = 'hannah.morgan@email.com';
+UPDATE users SET valid_id = 'Passport - P8901234R'        WHERE email = 'leo.bell@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01889900' WHERE email = 'addison.murphy@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-55667788'       WHERE email = 'jaxon.bailey@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-67890123'   WHERE email = 'aubrey.rivera@email.com';
+UPDATE users SET valid_id = 'Passport - P9012345S'        WHERE email = 'mason.cooper@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-01990011' WHERE email = 'stella.richardson@email.com';
+UPDATE users SET valid_id = 'National ID - NID-33445566'  WHERE email = 'ethan.cox@email.com';
+UPDATE users SET valid_id = 'Passport - P0123456T'        WHERE email = 'lucy.howard@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02001122' WHERE email = 'logan.ward@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-78901234'   WHERE email = 'violet.torres@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-66778899'       WHERE email = 'grayson.peterson@email.com';
+UPDATE users SET valid_id = 'Passport - P1234567U'        WHERE email = 'aurora.gray@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02112233' WHERE email = 'maverick.ramirez@email.com';
+UPDATE users SET valid_id = 'National ID - NID-44556677'  WHERE email = 'savannah.james@email.com';
+UPDATE users SET valid_id = 'Passport - P2345678V'        WHERE email = 'elijah.watson@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-89012345'   WHERE email = 'brooklyn.brooks@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02223344' WHERE email = 'noah.kelly@email.com';
+UPDATE users SET valid_id = 'Postal ID - POST-55667788'   WHERE email = 'leah.sanders@email.com';
+UPDATE users SET valid_id = 'Passport - P3456789W'        WHERE email = 'aiden.price@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-77889900'       WHERE email = 'anna.bennett@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02334455' WHERE email = 'xavier.wood@email.com';
+UPDATE users SET valid_id = 'National ID - NID-55667788'  WHERE email = 'paisley.barnes@email.com';
+UPDATE users SET valid_id = 'Passport - P4567890X'        WHERE email = 'colton.ross@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-90123456'   WHERE email = 'bella.henderson@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02445566' WHERE email = 'ezra.coleman@email.com';
+UPDATE users SET valid_id = 'Postal ID - POST-66778899'   WHERE email = 'skylar.jenkins@email.com';
+UPDATE users SET valid_id = 'Passport - P5678901Y'        WHERE email = 'axel.perry@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-88990011'       WHERE email = 'claire.powell@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02556677' WHERE email = 'cooper.long@email.com';
+UPDATE users SET valid_id = 'National ID - NID-66778899'  WHERE email = 'natalie.patterson@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-01234567'   WHERE email = 'easton.hughes@email.com';
+UPDATE users SET valid_id = 'Passport - P6789012Z'        WHERE email = 'caroline.flores@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02667788' WHERE email = 'adrian.washington@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-99001122'       WHERE email = 'kinsley.butler@email.com';
+UPDATE users SET valid_id = 'National ID - NID-77889900'  WHERE email = 'kai.simmons@email.com';
+UPDATE users SET valid_id = 'Passport - P7890123AA'       WHERE email = 'naomi.foster@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02778899' WHERE email = 'brayden.gonzales@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-12345679'   WHERE email = 'allison.bryant@email.com';
+UPDATE users SET valid_id = 'Postal ID - POST-77889900'   WHERE email = 'greyson.alexander@email.com';
+UPDATE users SET valid_id = 'Passport - P8901234BB'       WHERE email = 'samantha.russell@email.com';
+UPDATE users SET valid_id = 'Driver\'s License - DL-02889900' WHERE email = 'jameson.griffin@email.com';
+UPDATE users SET valid_id = 'SSS ID - SSS-00112233'       WHERE email = 'kennedy.diaz@email.com';
+UPDATE users SET valid_id = 'National ID - NID-88990011'  WHERE email = 'bryson.hayes@email.com';
+UPDATE users SET valid_id = 'PhilSys ID - PSN-23456780'   WHERE email = 'madelyn.myers@email.com';
+-- ============================================
+
+
 -- SERVICES (15 common vehicle services)
 -- ============================================
 INSERT INTO services (service_name, description, base_price, estimated_duration, status) VALUES

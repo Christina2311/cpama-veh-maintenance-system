@@ -103,7 +103,7 @@
             cursor: pointer; transition: opacity 0.2s; font-size: 14px;
         }
         .action-btn:hover { opacity: 0.8; }
-        .btn-edit { background: #3b82f6; color: white; }
+        .btn-delete { background: #ef4444; color: white; }
         .btn-view { background: #6160A2; color: white; }
 
         .add-vehicle-btn {
@@ -431,16 +431,10 @@
                                 <td>{{ $vehicle->year }}</td>
                                 <td>{{ $vehicle->mileage ? number_format($vehicle->mileage) . ' mi' : '—' }}</td>
                                 <td>
-                                    {{-- Edit --}}
-                                    <button class="action-btn btn-edit me-1" title="Edit"
-                                        onclick="openEditModal(
-                                            {{ $vehicle->id }},
-                                            '{{ addslashes($vehicle->make . ' ' . $vehicle->model) }}',
-                                            '{{ $vehicle->year }}',
-                                            '{{ $vehicle->mileage ?? '' }}',
-                                            '{{ $vehicle->color ?? '' }}'
-                                        )">
-                                        <img src="{{ asset('images/edit_icon.png') }}" style="width:15px; height:15px; filter: brightness(0) invert(1);">
+                                    {{-- Delete --}}
+                                    <button class="action-btn btn-delete me-1" title="Delete"
+                                        onclick="openDeleteConfirm({{ $vehicle->id }}, '{{ addslashes($vehicle->make . ' ' . $vehicle->model) }}')">
+                                        <img src="{{ asset('images/delete_icon.png') }}" style="width:15px; height:15px; filter: brightness(0) invert(1);">
                                     </button>
                                     {{-- View --}}
                                     <button class="action-btn btn-view" title="View Details"
@@ -658,7 +652,9 @@
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn-save" onclick="switchToEdit()">Edit Vehicle</button>
+                <button style="background:#ef4444; color:white; border:none; border-radius:8px; padding:10px 24px; font-size:13px; font-weight:700; cursor:pointer;"
+                        onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'"
+                        onclick="openDeleteConfirmFromView()">Delete Vehicle</button>
             </div>
         </div>
     </div>
@@ -699,6 +695,32 @@
         </div>
     </div>
 </div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- MODAL — DELETE CONFIRMATION          -->
+<!-- ══════════════════════════════════════ -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content dialog-card">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Vehicle</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">Are you sure you want to delete <strong id="delete_vehicle_name"></strong>? This action cannot be undone.</div>
+            <div class="modal-footer d-flex gap-2 justify-content-end">
+                <button class="btn-cancel" style="border:1px solid #dee2e6;" data-bs-dismiss="modal">Cancel</button>
+                <button style="background:#ef4444; color:white; border:none; border-radius:6px; padding:8px 20px; font-size:13px; font-weight:600; cursor:pointer;"
+                        onclick="submitDeleteVehicle()">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden delete form -->
+<form id="deleteVehicleForm" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
 
 <!-- Hidden forms -->
 <form id="addVehicleForm" method="POST" action="{{ route('admin.vehicles.store') }}" style="display:none;">
@@ -745,6 +767,7 @@
     const viewVehicleModal  = new bootstrap.Modal(document.getElementById('viewVehicleModal'));
     const editConfirmModal  = new bootstrap.Modal(document.getElementById('editConfirmModal'));
     const addConfirmModal   = new bootstrap.Modal(document.getElementById('addConfirmModal'));
+    const deleteConfirmModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
 
     let currentVehicleId = null;
 
@@ -782,30 +805,27 @@
         viewVehicleModal.show();
     }
 
-    // ── SWITCH FROM VIEW TO EDIT ──
-    function switchToEdit() {
-        viewVehicleModal.hide();
-        setTimeout(() => {
-            document.getElementById('edit_vehicle_name').value = document.getElementById('vd_name').textContent;
-            document.getElementById('edit_make').value         = document.getElementById('vd_type').textContent;
-            document.getElementById('edit_year').value         = document.getElementById('vd_year').textContent;
-            document.getElementById('edit_mileage').value      = document.getElementById('vd_mileage').textContent.replace(/[^0-9]/g, '');
-            document.getElementById('edit_color').value        = document.getElementById('vd_color').textContent === '—' ? '' : document.getElementById('vd_color').textContent;
-            editVehicleModal.show();
-        }, 300);
+    // ── DELETE FROM TABLE ──
+    function openDeleteConfirm(id, name) {
+        currentVehicleId = id;
+        document.getElementById('delete_vehicle_name').textContent = name;
+        deleteConfirmModal.show();
     }
 
-    // ── EDIT DIRECTLY FROM TABLE ──
-    function openEditModal(id, name, year, mileage, color) {
-        currentVehicleId = id;
-        document.getElementById('edit_vehicle_name').value = name;
-        document.getElementById('edit_make').value         = name.split(' ')[0];
-        document.getElementById('edit_year').value         = year;
-        document.getElementById('edit_mileage').value      = mileage;
-        document.getElementById('edit_color').value        = color;
-        document.getElementById('edit_err_make').textContent = '';
-        document.getElementById('edit_err_year').textContent = '';
-        editVehicleModal.show();
+    // ── DELETE FROM VIEW DETAILS MODAL ──
+    function openDeleteConfirmFromView() {
+        const name = document.getElementById('vd_name').textContent;
+        document.getElementById('delete_vehicle_name').textContent = name;
+        viewVehicleModal.hide();
+        setTimeout(() => deleteConfirmModal.show(), 300);
+    }
+
+    // ── SUBMIT DELETE ──
+    function submitDeleteVehicle() {
+        const form = document.getElementById('deleteVehicleForm');
+        form.action = `/admin/vehicles/${currentVehicleId}`;
+        deleteConfirmModal.hide();
+        form.submit();
     }
 
     // ── SUBMIT EDIT ──

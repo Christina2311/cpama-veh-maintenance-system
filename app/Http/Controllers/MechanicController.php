@@ -94,13 +94,15 @@ class MechanicController extends Controller
                 return $mechanic;
             });
 
-        $delegatedTasks = Task::with(['appointment.vehicle', 'service', 'mechanic'])
+        $tasks = Task::with(['appointment.vehicle', 'service', 'mechanic'])
             ->where('assigned_by', $mechanicId)
             ->where('mechanic_id', '!=', $mechanicId)
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('mechanic.team.index', compact('mechanics', 'delegatedTasks'));
+        $delegatedTasks = $tasks;
+
+        return view('mechanic.team.index', compact('mechanics', 'delegatedTasks', 'tasks'));
     }
 
 

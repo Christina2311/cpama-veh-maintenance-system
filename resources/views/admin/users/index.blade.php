@@ -17,77 +17,82 @@
         .sidebar {
             width: 210px;
             min-width: 210px;
-            flex-shrink: 0;
             height: 100vh;
             background: #0F0F40;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 24px 14px;
-            position: sticky;
-            top: 0;
         }
 
-        .sidebar-logo { 
-            width: 80px; 
-            height: 80px; 
-            border-radius: 50%; 
-            object-fit: cover; 
+        .sidebar-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .sidebar-title {
-            font-size: 11px; 
-            font-weight: 800; 
+            font-size: 11px;
+            font-weight: 800;
             text-transform: uppercase;
-            color: white; 
-            text-align: center; 
-            letter-spacing: 0.5px; 
+            color: white;
+            text-align: center;
+            letter-spacing: 0.5px;
             line-height: 1.3;
         }
 
-        .sidebar-admin { 
-            font-size: 11px; 
-            font-weight: 600; 
-            color: rgba(255,255,255,0.9); 
+        .sidebar-admin {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
         }
 
         .nav-item .nav-link {
-            display: flex; align-items: center; gap: 10px; color: white;
-            font-size: 12px; font-weight: 600; padding: 9px 14px; border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 9px 14px;
+            border-radius: 8px;
             border: 1px solid rgba(255,255,255,0.15);
-            background-color: rgba(255,255,255,0.08); transition: background-color 0.2s;
+            background-color: rgba(255,255,255,0.08);
+            transition: background-color 0.2s;
         }
 
-        .nav-item .nav-link:hover, 
+        .nav-item .nav-link:hover,
         .nav-item .nav-link.active {
-            background-color: rgba(255,255,255,0.22); 
+            background-color: rgba(255,255,255,0.22);
             color: white;
         }
 
-        .nav-item 
-        .nav-link img { 
-            width: 15px; 
-            height: 15px; 
-            filter: brightness(0) invert(1); 
-            flex-shrink: 0; 
+        .nav-item .nav-link img {
+            width: 15px;
+            height: 15px;
+            filter: brightness(0) invert(1);
+            flex-shrink: 0;
         }
 
         .logout-btn {
-            font-size: 12px; 
-            font-weight: 600; 
-            color: white; 
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
             background: transparent;
-            border: 1px solid rgba(255,255,255,0.3); 
+            border: 1px solid rgba(255,255,255,0.3);
             border-radius: 8px;
-            padding: 9px 14px; 
-            width: 100%; 
-            transition: background-color 0.2s; 
+            padding: 9px 14px;
+            width: 100%;
+            transition: background-color 0.2s;
             cursor: pointer;
         }
 
-        .logout-btn:hover { 
-            background-color: rgba(255,255,255,0.15); 
+        .logout-btn:hover {
+            background-color: rgba(255,255,255,0.15);
+            color: white;
         }
+
 
         /* ── MAIN ── */
         .main-content { 
@@ -185,7 +190,7 @@
         .table-scroll { 
             overflow-y: auto; 
             overflow-x: auto; 
-            max-height: 55vh; 
+            max-height: 48vh; 
             border-radius: 8px; 
         }
 
@@ -232,43 +237,38 @@
         }
 
         .badge-role { 
-            font-size: 11px; 
+            font-size: 13px; 
             font-weight: 600; 
-            padding: 4px 10px; 
-            border-radius: 20px; 
         }
 
-        .badge-admin    { 
-            background: #0D0D32; 
-            color: white; 
-        }
-
-        .badge-mechanic { 
-            background: #6160A2; 
-            color: white; 
-        }
-
-        .badge-customer { 
-            background: #8E98A8; 
-            color: white; 
-        }
+        .badge-admin          { color: #0D0D32; }
+        .badge-mechanic       { color: #6160A2; }
+        .badge-senior_mechanic{ color: #4f46e5; }
+        .badge-customer       { color: #6c757d; }
 
         .badge-status { 
-            font-size: 11px; 
+            font-size: 13px; 
             font-weight: 600; 
-            padding: 4px 10px; 
-            border-radius: 20px; 
         }
 
-        .badge-active   { 
-            background: #d1fae5; 
-            color: #065f46; 
-        }
+        .badge-active   { color: #065f46; }
+        .badge-inactive { color: #991b1b; }
 
-        .badge-inactive { 
-            background: #fee2e2; 
-            color: #991b1b; 
+        /* ── PAGINATION ── */
+        .pagination-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 20px; border-top: 1px solid #f0f0f0;
+            font-size: 12px; color: #6c757d;
         }
+        .page-btns { display: flex; gap: 4px; }
+        .page-btn {
+            background: none; border: 1px solid #dee2e6; border-radius: 6px;
+            padding: 4px 10px; font-size: 12px; font-weight: 600;
+            color: #0D0D32; cursor: pointer; transition: background-color 0.15s;
+            text-decoration: none; display: inline-flex; align-items: center;
+        }
+        .page-btn:hover, .page-btn.active { background: #0D0D32; color: white; border-color: #0D0D32; }
+        .page-btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
 
         .action-btn {
             width: 32px; height: 32px; border-radius: 6px; border: none;
@@ -495,32 +495,38 @@
         <ul class="nav flex-column w-100 gap-2 flex-grow-1">
             <li class="nav-item">
                 <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                    <img src="{{ asset('images/dashboard_icon.png') }}" alt=""> Dashboard
+                    <img src="{{ asset('images/dashboard_icon.png') }}" alt="">
+                    Dashboard
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('admin.vehicles') }}" class="nav-link">
-                    <img src="{{ asset('images/vehicles_icon.png') }}" alt=""> Vehicles
+                    <img src="{{ asset('images/vehicles_icon.png') }}" alt="">
+                    Vehicles
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('admin.appointments') }}" class="nav-link">
-                    <img src="{{ asset('images/appointment_icon.png') }}" alt=""> Appointments
+                    <img src="{{ asset('images/appointment_icon.png') }}" alt="">
+                    Appointments
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('admin.maintenance') }}" class="nav-link">
-                    <img src="{{ asset('images/maintenance_icon.png') }}" alt=""> Maintenance
+                    <img src="{{ asset('images/maintenance_icon.png') }}" alt="">
+                    Maintenance
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ route('admin.reports') }}" class="nav-link">
-                    <img src="{{ asset('images/reports_icon.png') }}" alt=""> Reports
+            <a href="{{ route('admin.reports') }}" class="nav-link">
+                    <img src="{{ asset('images/reports_icon.png') }}" alt="">
+                    Reports
                 </a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('admin.users') }}" class="nav-link active">
-                    <img src="{{ asset('images/user_icon.png') }}" alt=""> User Management
+                    <img src="{{ asset('images/user_icon.png') }}" alt="">
+                    User Management
                 </a>
             </li>
         </ul>
@@ -533,6 +539,7 @@
             </button>
         </form>
     </div>
+
 
     <!-- ── MAIN CONTENT ── -->
     <div class="main-content flex-grow-1">
@@ -547,7 +554,7 @@
 
         <!-- Role Stat Cards -->
         <div class="row g-3 mb-4">
-            <div class="col-4">
+            <div class="col-3">
                 <div class="stat-card p-3 d-flex flex-column">
                     <div class="d-flex align-items-center gap-2 stat-card-label mb-2">
                         <img src="{{ asset('images/admin_icon.png') }}" alt=""> Admin
@@ -556,7 +563,7 @@
                 </div>
             </div>
 
-            <div class="col-4">
+            <div class="col-3">
                 <div class="stat-card p-3 d-flex flex-column">
                     <div class="d-flex align-items-center gap-2 stat-card-label mb-2">
                         <img src="{{ asset('images/maintenance_icon.png') }}" alt=""> Senior Mechanics
@@ -565,7 +572,7 @@
                 </div>
             </div>
 
-            <div class="col-4">
+            <div class="col-3">
                 <div class="stat-card p-3 d-flex flex-column">
                     <div class="d-flex align-items-center gap-2 stat-card-label mb-2">
                         <img src="{{ asset('images/maintenance_icon.png') }}" alt=""> Mechanics
@@ -574,7 +581,7 @@
                 </div>
             </div>
 
-            <div class="col-4">
+            <div class="col-3">
                 <div class="stat-card p-3 d-flex flex-column">
                     <div class="d-flex align-items-center gap-2 stat-card-label mb-2">
                         <img src="{{ asset('images/customer_icon.png') }}" alt=""> Customers
@@ -683,6 +690,35 @@
                     </tbody>
                 </table>
             </div>
+
+            {{-- Pagination --}}
+            @if($users->hasPages())
+            <div class="pagination-bar">
+                <div class="page-info">
+                    Showing {{ $users->firstItem() }}–{{ $users->lastItem() }} of {{ $users->total() }} records
+                </div>
+                <div class="page-btns">
+                    @if($users->onFirstPage())
+                        <button class="page-btn" disabled>‹</button>
+                    @else
+                        <a href="{{ $users->previousPageUrl() }}" class="page-btn">‹</a>
+                    @endif
+
+                    @foreach($users->getUrlRange(1, $users->lastPage()) as $page => $url)
+                        <a href="{{ $url }}"
+                           class="page-btn {{ $users->currentPage() === $page ? 'active' : '' }}">
+                            {{ $page }}
+                        </a>
+                    @endforeach
+
+                    @if($users->hasMorePages())
+                        <a href="{{ $users->nextPageUrl() }}" class="page-btn">›</a>
+                    @else
+                        <button class="page-btn" disabled>›</button>
+                    @endif
+                </div>
+            </div>
+            @endif
         </div>
 
     </div>
