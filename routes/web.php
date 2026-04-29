@@ -58,6 +58,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/maintenance', [AdminController::class, 'maintenance'])->name('admin.maintenance');
     Route::patch('/admin/maintenance/{task}/status', [AdminController::class, 'updateMaintenanceStatus'])->name('admin.maintenance.status');
 
+    // ── ADMIN REPORTS ──
+    Route::get('/admin/reports', [AdminController::class, 'reports'])->name('admin.reports');
+
     // ── CUSTOMER ──
     Route::get('/customer/dashboard',     [CustomerController::class, 'dashboard'])->name('customer.dashboard');
     Route::post('/customer/vehicles',     [CustomerController::class, 'storeVehicle'])->name('customer.vehicles.store');

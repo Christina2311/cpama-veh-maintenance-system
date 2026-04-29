@@ -8,6 +8,8 @@
     <style>
         * { box-sizing: border-box; }
 
+        .layout-wrapper { height: 100vh; }
+
         body {
             height: 100vh;
             overflow: hidden;
@@ -82,7 +84,7 @@
             background: rgba(255,255,255,0.92); border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;
         }
-        .table-scroll { overflow-y: auto; overflow-x: auto; max-height: 60vh; border-radius: 8px; }
+        .table-scroll { overflow-y: auto; overflow-x: auto; max-height: vh; border-radius: 8px; }
         .table { margin: 0; font-size: 13px; }
         .table thead th {
             background: #D9D9D9; color: #000000; font-weight: 700; font-size: 12px;
@@ -172,11 +174,169 @@
         }
         .maintenance-row:last-child { border-bottom: none; }
         .view-card .modal-footer { border-top: 1px solid #eee; padding: 12px 20px; }
+    
+        /* ── PAGINATION ── */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 20px;
+            border-top: 1px solid #f0f0f0;
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .pagination-bar .page-info { font-size: 12px; color: #6c757d; }
+
+        .pagination-bar .page-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-btn {
+            background: none;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #0D0D32;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+
+        .page-btn:hover, .page-btn.active { background: #0D0D32; color: white; border-color: #0D0D32; }
+        .page-btn:disabled { opacity: 0.4; cursor: default; }
+    
+    
+        /* ══════════════════════════════════════════════
+           RESPONSIVE — TABLET (≤ 768px) & PHONE (≤ 480px)
+        ══════════════════════════════════════════════ */
+
+        /* ── TABLET (≤ 768px) ── */
+        @media (max-width: 768px) {
+            body { overflow: auto !important; }
+            .layout-wrapper { height: auto !important; min-height: 100vh !important; }
+
+            .sidebar {
+                width: 160px !important;
+                min-width: 160px !important;
+                height: 100vh !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                z-index: 100 !important;
+                overflow-y: auto !important;
+                padding: 16px 10px !important;
+            }
+
+            .sidebar-logo { width: 56px !important; height: 56px !important; }
+            .sidebar-title { font-size: 9px !important; }
+            .sidebar-admin { font-size: 10px !important; }
+            .nav-item .nav-link { padding: 8px 10px !important; font-size: 11px !important; gap: 7px !important; }
+            .logout-btn { font-size: 11px !important; padding: 8px 10px !important; }
+
+            .main-content {
+                margin-left: 160px !important;
+                padding: 20px 16px !important;
+                width: calc(100% - 160px) !important;
+                overflow-x: hidden !important;
+            }
+
+            h1 { font-size: 24px !important; }
+
+            /* Filters wrap */
+            .d-flex.gap-2.mb-4,
+            .d-flex.gap-3 { flex-wrap: wrap !important; gap: 8px !important; }
+
+            /* Search input full width */
+            .input-group { width: 100% !important; }
+
+            /* Table scrolls horizontally */
+            .card { overflow-x: auto !important; }
+            .table { min-width: 600px !important; }
+
+            /* Pagination */
+            .d-flex.justify-content-between.align-items-center {
+                flex-wrap: wrap !important;
+                gap: 8px !important;
+            }
+        }
+
+        /* ── PHONE (≤ 480px) ── */
+        @media (max-width: 480px) {
+            body { overflow: auto !important; }
+            .layout-wrapper { height: auto !important; min-height: 100vh !important; }
+
+            /* Sidebar: icon-only, fixed full height */
+            .sidebar {
+                width: 56px !important;
+                min-width: 56px !important;
+                height: 100vh !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                z-index: 100 !important;
+                overflow-y: auto !important;
+                padding: 14px 8px !important;
+                align-items: center !important;
+            }
+
+            .sidebar-logo { width: 34px !important; height: 34px !important; margin-bottom: 6px !important; }
+
+            /* Hide all sidebar text */
+            .sidebar-title,
+            .sidebar-admin { display: none !important; }
+
+            /* Icon-only nav links */
+            .nav-item .nav-link {
+                justify-content: center !important;
+                padding: 9px 0 !important;
+                font-size: 0 !important;
+                gap: 0 !important;
+            }
+            .nav-item .nav-link img { width: 18px !important; height: 18px !important; margin: 0 !important; }
+
+            /* Logout icon only */
+            .logout-btn { padding: 9px 0 !important; font-size: 0 !important; gap: 0 !important; justify-content: center !important; }
+            .logout-btn img { width: 18px !important; height: 18px !important; margin: 0 !important; }
+
+            /* Main content offset */
+            .main-content {
+                margin-left: 56px !important;
+                padding: 14px 10px !important;
+                width: calc(100% - 56px) !important;
+                overflow-x: hidden !important;
+            }
+
+            h1 { font-size: 20px !important; }
+
+            /* Filters stack */
+            .d-flex.gap-2.mb-4,
+            .d-flex.gap-3 { flex-direction: column !important; gap: 8px !important; }
+            .input-group, select { width: 100% !important; }
+
+            /* Table scrolls */
+            .card { overflow-x: auto !important; }
+            .table { min-width: 540px !important; font-size: 12px !important; }
+
+            /* Pagination stacks */
+            .d-flex.justify-content-between.align-items-center {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+            }
+
+            /* Modals full screen */
+            .modal-dialog { margin: 0 !important; max-width: 100% !important; }
+            .modal-content { border-radius: 0 !important; }
+        }
+
     </style>
 </head>
 <body>
 
-<div class="d-flex" style="height: 100vh;">
+<div class="d-flex layout-wrapper">
 
     <!-- ── SIDEBAR ── -->
     <div class="sidebar">
@@ -305,6 +465,35 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                <!-- ── PAGINATION ── -->
+            @if($tasks->hasPages())
+                <div class="pagination-bar">
+                    <div class="page-info">
+                        Showing {{ $tasks->firstItem() }}–{{ $tasks->lastItem() }} of {{ $tasks->total() }} records
+                    </div>
+                    <div class="page-btns">
+                        @if($tasks->onFirstPage())
+                            <button class="page-btn" disabled>‹</button>
+                        @else
+                            <a href="{{ $tasks->previousPageUrl() }}" class="page-btn">‹</a>
+                        @endif
+
+                        @foreach($tasks->getUrlRange(1, $tasks->lastPage()) as $page => $url)
+                            <a href="{{ $url }}"
+                               class="page-btn {{ $tasks->currentPage() === $page ? 'active' : '' }}">
+                                {{ $page }}
+                            </a>
+                        @endforeach
+
+                        @if($tasks->hasMorePages())
+                            <a href="{{ $tasks->nextPageUrl() }}" class="page-btn">›</a>
+                        @else
+                            <button class="page-btn" disabled>›</button>
+                        @endif
+                    </div>
+                </div>
+            @endif
             </div>
         </div>
     </div>

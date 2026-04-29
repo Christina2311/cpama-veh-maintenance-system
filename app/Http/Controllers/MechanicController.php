@@ -68,13 +68,13 @@ class MechanicController extends Controller
     }
 
     // COMPLETED TASKS
-    public function completed()
+   public function completed()
     {
         $tasks = Task::with(['appointment.vehicle', 'service'])
             ->where('mechanic_id', Auth::id())
             ->where('status', 'completed')
             ->orderBy('completed_at', 'desc')
-            ->get();
+            ->paginate(10)->withQueryString();
 
         return view('mechanic.completed.index', compact('tasks'));
     }

@@ -330,7 +330,157 @@
             padding: 8px 20px; font-size: 13px; font-weight: 600; cursor: pointer;
         }
         .btn-yes:hover, .btn-ok:hover { background: #1a1a5e; }
-    </style>
+
+
+        
+        /* ══════════════════════════════════════════════
+           RESPONSIVE — TABLET (≤ 768px) & PHONE (≤ 480px)
+        ══════════════════════════════════════════════ */
+
+        /* ── TABLET (iPad, ≤ 768px) ── */
+        @media (max-width: 768px) {
+            body { overflow: auto !important; height: auto !important; }
+
+            .d-flex[style*="height: 100vh"],
+            .d-flex[style*="height:100vh"] {
+                height: auto !important;
+                min-height: 100vh !important;
+            }
+
+            /* Sidebar narrows — icons + labels still visible, full height */
+            .sidebar {
+                width: 160px !important;
+                min-width: 160px !important;
+                height: 100vh !important;
+                min-height: 100vh !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                z-index: 100 !important;
+                overflow-y: auto !important;
+                padding: 16px 10px !important;
+            }
+
+            .sidebar-logo { width: 60px !important; height: 60px !important; }
+            .sidebar-title { font-size: 9px !important; }
+            .sidebar-admin, .sidebar-mechanic,
+            .sidebar-role, .sidebar-name { font-size: 10px !important; }
+
+            .sidebar .nav-item .nav-link {
+                padding: 8px 10px !important;
+                font-size: 11px !important;
+                gap: 7px !important;
+            }
+
+            .logout-btn { font-size: 11px !important; padding: 8px 10px !important; }
+
+            /* Main content offset from fixed sidebar */
+            .main-content { padding: 20px 16px !important; margin-left: 160px !important; }
+            .page-title { font-size: 24px !important; }
+
+            /* Stat cards: 2 columns */
+            .stat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+            .row.g-3 > .col-4 { width: 50% !important; flex: 0 0 50% !important; max-width: 50% !important; }
+
+            /* Tables scroll horizontally */
+            .table-card, .panel { overflow-x: auto !important; }
+            .table-card table, .perf-table { min-width: 480px !important; }
+
+            /* Bottom grid stacks */
+            .bottom-grid { grid-template-columns: 1fr !important; }
+
+            /* Filters wrap */
+            .filters-bar, .filter-bar { flex-wrap: wrap !important; gap: 8px !important; }
+        }
+
+        /* ── PHONE (≤ 480px) ── */
+        @media (max-width: 480px) {
+            /* Sidebar collapses to icons only — full height */
+            .sidebar {
+                width: 56px !important;
+                min-width: 56px !important;
+                height: 100vh !important;
+                min-height: 100vh !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                z-index: 100 !important;
+                overflow-y: auto !important;
+                padding: 16px 8px !important;
+                align-items: center !important;
+            }
+
+            .sidebar-logo { width: 36px !important; height: 36px !important; margin-bottom: 6px !important; }
+
+            /* Hide all text in sidebar */
+            .sidebar-title,
+            .sidebar-admin,
+            .sidebar-mechanic,
+            .sidebar-role,
+            .sidebar-name { display: none !important; }
+
+            /* Nav links: icon only, centered */
+            .sidebar ul.nav { gap: 6px !important; }
+            .sidebar .nav-item { width: 100% !important; }
+            .sidebar .nav-item .nav-link {
+                justify-content: center !important;
+                padding: 9px 0 !important;
+                font-size: 0 !important;
+                gap: 0 !important;
+            }
+            .sidebar .nav-item .nav-link img {
+                width: 18px !important;
+                height: 18px !important;
+                margin: 0 !important;
+                flex-shrink: 0 !important;
+            }
+
+            /* Logout: icon only */
+            .logout-btn {
+                padding: 9px 0 !important;
+                font-size: 0 !important;
+                gap: 0 !important;
+                justify-content: center !important;
+            }
+            .logout-btn img {
+                width: 18px !important;
+                height: 18px !important;
+                margin: 0 !important;
+            }
+
+            /* Main content offset from fixed sidebar */
+            .main-content { padding: 16px 12px !important; margin-left: 56px !important; }
+            .page-title { font-size: 20px !important; }
+
+            /* Stat cards: 1 column */
+            .stat-grid { grid-template-columns: 1fr !important; }
+            .row.g-3 > .col-4 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
+            .stat-card-value { font-size: 24px !important; }
+
+            /* Top bar stacks */
+            .top-bar { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+            .btn-download { width: 100% !important; justify-content: center !important; }
+
+            /* Revenue card stacks */
+            .revenue-card { flex-direction: column !important; gap: 8px !important; }
+            .revenue-value { font-size: 22px !important; }
+
+            /* Filters full width */
+            .filter-select, .search-input-wrap,
+            .filter-date-input { width: 100% !important; max-width: 100% !important; }
+
+            /* Pagination stacks */
+            .pagination-bar { flex-direction: column !important; gap: 8px !important; align-items: flex-start !important; }
+
+            /* Modals full screen */
+            .modal-dialog { margin: 0 !important; max-width: 100% !important; }
+            .modal-content, .modal-card { border-radius: 0 !important; }
+
+            /* Summary row 2 cols */
+            .summary-row { grid-template-columns: repeat(2, 1fr) !important; }
+        }
+
+        </style>
 </head>
 <body>
 
@@ -364,7 +514,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.reports') }}" class="nav-link">
                     <img src="{{ asset('images/reports_icon.png') }}" alt=""> Reports
                 </a>
             </li>

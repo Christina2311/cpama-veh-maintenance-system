@@ -323,7 +323,9 @@ class AdminController extends Controller
     {
         $vehicles  = Vehicle::with('owner')->paginate(20);
         $customers = User::where('role', 'customer')->where('status', 'active')->get();
-        return view('admin.vehicles.index', compact('vehicles', 'customers'));
+
+        $tasks = Task::paginate(10);
+        return view('admin.vehicles.index', compact('vehicles', 'customers', 'tasks'));
     }
 
     // ──────────────────────────────────────────
@@ -358,5 +360,67 @@ class AdminController extends Controller
             'color'   => $request->color,
         ]);
         return redirect()->route('admin.vehicles')->with('vehicle_edited', true);
+    }
+
+    // OPERATION REPORTS
+    public function reports()
+    {
+        // ── SUMMARY STATS ──
+        $totalAppointments  = \App\Models\Appointment::count();
+        $completedServices  = \App\Models\Appointment::where('status', 'completed')->count();
+        $pendingAppointments = \App\Models\Appointment::whereIn('status', ['pending', 'confirmed'])->count();
+        $totalRevenue       = (float) \App\Models\Appointment::where('status', 'completed')->sum('total_amount');
+        $activeCustomers    = \App\Models\User::where('role', 'customer')->where('status', 'active')->count();
+        $activeVehicles     = \App\Models\Vehicle::count();
+
+        // ── REVENUE BY MONTH (last 12 months) ──
+        $revenueByMonth = \App\Models\Appointment::where('status', 'completed')
+            ->where('appointment_date', '>=', now()->subMonths(11)->startOfMonth())
+            ->selectRaw("DATE_FORMAT(appointment_date, '%b %Y') as month, SUM(total_amount) as total, MIN(appointment_date) as sort_date")
+            ->groupBy('month')
+            ->orderBy('sort_date')
+            ->get();
+
+        // ── TOP PERFORMING MECHANICS (this month) ──
+        $topMechanics = \App\Models\User::whereIn('role', ['mechanic', 'senior_mechanic'])
+            ->where('status', 'active')
+            ->get()
+            ->map(function ($mechanic) {
+                $completedTasks = \App\Models\Task::where('mechanic_id', $mechanic->id)
+                    ->where('status', 'completed')
+                    ->whereBetween('completed_at', [now()->startOfMonth(), now()->endOfMonth()])
+                    ->count();
+
+                $revenue = (float) \App\Models\Task::where('tasks.mechanic_id', $mechanic->id)
+                ->where('tasks.status', 'completed')
+                ->whereBetween('tasks.completed_at', [now()->startOfMonth(), now()->endOfMonth()])
+                ->join('appointments', 'tasks.appointment_id', '=', 'appointments.id')
+                ->sum('appointments.total_amount');
+                
+                $mechanic->completed_count = $completedTasks;
+                $mechanic->revenue         = $revenue;
+                return $mechanic;
+            })
+            ->filter(fn($m) => $m->completed_count > 0)
+            ->sortByDesc('completed_count')
+            ->take(5)
+            ->values();
+
+        // ── MAINTENANCE BREAKDOWN (all time) ──
+        $maintenanceBreakdown = \App\Models\Service::leftJoin('tasks', 'tasks.service_id', '=', 'services.id')
+            ->selectRaw('services.service_name, COUNT(tasks.id) as count')
+            ->groupBy('services.id', 'services.service_name')
+            ->orderByDesc('count')
+            ->get()
+            ->map(fn($s) => (object)[
+                'service_name' => $s->service_name,
+                'count'        => (int) $s->count,
+            ]);
+
+        return view('admin.reports.index', compact(
+            'totalAppointments', 'completedServices', 'pendingAppointments',
+            'totalRevenue', 'activeCustomers', 'activeVehicles',
+            'revenueByMonth', 'topMechanics', 'maintenanceBreakdown'
+        ));
     }
 }
