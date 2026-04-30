@@ -127,8 +127,7 @@
             opacity: 0.7; 
         }
 
-        .stat-card-value { 
-            font-size: 30px; 
+        .stat-card-value { z            font-size: 30px; 
             font-weight: 800; 
             color: #0D0D32; 
         }
@@ -379,8 +378,16 @@
             .page-title { font-size: 24px !important; }
 
             /* Stat cards: 2 columns */
-            .stat-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
-            .row.g-3 > .col-4 { width: 50% !important; flex: 0 0 50% !important; max-width: 50% !important; }
+            .stat-grid { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px !important; 
+            }
+
+            .row.g-3 > .col-4 { 
+                width: 50% !important; 
+                flex: 0 0 50% !important; 
+                max-width: 50% !important; 
+            }
 
             /* Tables scroll horizontally */
             .table-card, .panel { overflow-x: auto !important; }
@@ -390,7 +397,10 @@
             .bottom-grid { grid-template-columns: 1fr !important; }
 
             /* Filters wrap */
-            .filters-bar, .filter-bar { flex-wrap: wrap !important; gap: 8px !important; }
+            .filters-bar, .filter-bar { 
+                flex-wrap: wrap !important; 
+                gap: 8px !important; 
+            }
         }
 
         /* ── PHONE (≤ 480px) ── */
@@ -410,7 +420,11 @@
                 align-items: center !important;
             }
 
-            .sidebar-logo { width: 36px !important; height: 36px !important; margin-bottom: 6px !important; }
+            .sidebar-logo { 
+                width: 36px !important; 
+                height: 36px !important; 
+                margin-bottom: 6px !important; 
+            }
 
             /* Hide all text in sidebar */
             .sidebar-title,
@@ -449,20 +463,39 @@
             }
 
             /* Main content offset from fixed sidebar */
-            .main-content { padding: 16px 12px !important; margin-left: 56px !important; }
+            .main-content { 
+                padding: 16px 12px !important; 
+                margin-left: 56px !important; }
+
             .page-title { font-size: 20px !important; }
 
             /* Stat cards: 1 column */
             .stat-grid { grid-template-columns: 1fr !important; }
-            .row.g-3 > .col-4 { width: 100% !important; flex: 0 0 100% !important; max-width: 100% !important; }
+            .row.g-3 > .col-4 { 
+                width: 100% !important; 
+                flex: 0 0 100% !important; 
+                max-width: 100% !important; 
+            }
             .stat-card-value { font-size: 24px !important; }
 
             /* Top bar stacks */
-            .top-bar { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
-            .btn-download { width: 100% !important; justify-content: center !important; }
+            .top-bar { 
+                flex-direction: column !important; 
+                align-items: flex-start !important; 
+                gap: 10px !important; 
+            }
+
+            .btn-download { 
+                width: 100% !important; 
+                justify-content: center !important; 
+            }
 
             /* Revenue card stacks */
-            .revenue-card { flex-direction: column !important; gap: 8px !important; }
+            .revenue-card { 
+                flex-direction: column !important; 
+                gap: 8px !important; 
+            }
+
             .revenue-value { font-size: 22px !important; }
 
             /* Filters full width */
@@ -470,10 +503,17 @@
             .filter-date-input { width: 100% !important; max-width: 100% !important; }
 
             /* Pagination stacks */
-            .pagination-bar { flex-direction: column !important; gap: 8px !important; align-items: flex-start !important; }
+            .pagination-bar { 
+                flex-direction: column !important; 
+                gap: 8px !important; 
+                align-items: flex-start !important; 
+            }
 
             /* Modals full screen */
-            .modal-dialog { margin: 0 !important; max-width: 100% !important; }
+            .modal-dialog { 
+                margin: 0 !important; 
+                max-width: 100% !important; 
+            }
             .modal-content, .modal-card { border-radius: 0 !important; }
 
             /* Summary row 2 cols */
