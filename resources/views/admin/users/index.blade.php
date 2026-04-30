@@ -660,25 +660,15 @@
                                     </button>
 
                                     @if($user->status === 'active')
-                                        <form method="POST" action="{{ route('admin.users.archive', $user->id) }}"
-                                            style="display:inline;"
-                                            onsubmit="return confirm('Archive {{ $user->name }}? They will be set to inactive.')">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="action-btn btn-archive ms-1" title="Archive">
-                                                <img src="{{ asset('images/archive_icon.png') }}" style="width:15px; height:15px; filter: brightness(0) invert(1);">
-                                            </button>
-                                        </form>
+                                        <button class="action-btn btn-archive ms-1" title="Archive"
+                                            onclick="openArchiveModal({{ $user->id }}, '{{ addslashes($user->name) }}')">
+                                            <img src="{{ asset('images/archive_icon.png') }}" style="width:15px; height:15px; filter: brightness(0) invert(1);">
+                                        </button>
                                     @else
-                                        <form method="POST" action="{{ route('admin.users.restore', $user->id) }}"
-                                            style="display:inline;"
-                                            onsubmit="return confirm('Restore {{ $user->name }}? They will be set to active.')">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" class="action-btn btn-restore ms-1" title="Restore">
-                                                <img src="{{ asset('images/user_icon.png') }}" style="width:15px; height:15px; filter: brightness(0) invert(1);">
-                                            </button>
-                                        </form>
+                                        <button class="action-btn btn-restore ms-1" title="Restore"
+                                            onclick="openRestoreModal({{ $user->id }}, '{{ addslashes($user->name) }}')">
+                                            <img src="{{ asset('images/user_icon.png') }}" style="width:15px; height:15px; filter: brightness(0) invert(1);">
+                                        </button>
                                     @endif
                                 </td>
                             </tr>
@@ -942,11 +932,97 @@
     <input type="hidden" name="password" id="edit_form_password">
 </form>
 
+<!-- ══════════════════════════════════════ -->
+<!-- MODAL — ARCHIVE CONFIRM              -->
+<!-- ══════════════════════════════════════ -->
+<div class="modal fade" id="archiveModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content dialog-card">
+            <div class="modal-header">
+                <h5 class="modal-title">Archive User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Archive <strong id="archive_user_name"></strong>? They will be set to inactive.
+            </div>
+            <div class="modal-footer d-flex gap-2 justify-content-end">
+                <button class="btn-no" data-bs-dismiss="modal">No</button>
+                <button class="btn-yes" onclick="submitArchive()">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- MODAL — RESTORE CONFIRM              -->
+<!-- ══════════════════════════════════════ -->
+<div class="modal fade" id="restoreModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content dialog-card">
+            <div class="modal-header">
+                <h5 class="modal-title">Restore User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                Restore <strong id="restore_user_name"></strong>? They will be set to active.
+            </div>
+            <div class="modal-footer d-flex gap-2 justify-content-end">
+                <button class="btn-no" data-bs-dismiss="modal">No</button>
+                <button class="btn-yes" onclick="submitRestore()">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden archive form -->
+<form id="archiveForm" method="POST" style="display:none;">
+    @csrf
+    @method('PATCH')
+</form>
+
+<!-- Hidden restore form -->
+<form id="restoreForm" method="POST" style="display:none;">
+    @csrf
+    @method('PATCH')
+</form>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const addUserModal  = new bootstrap.Modal(document.getElementById('addUserModal'));
     const questionModal = new bootstrap.Modal(document.getElementById('questionModal'));
     const confirmModal  = new bootstrap.Modal(document.getElementById('confirmModal'));
+    const archiveModal  = new bootstrap.Modal(document.getElementById('archiveModal'));
+    const restoreModal  = new bootstrap.Modal(document.getElementById('restoreModal'));
+
+    let currentActionUserId = null;
+
+    // ── ARCHIVE ──
+    function openArchiveModal(id, name) {
+        currentActionUserId = id;
+        document.getElementById('archive_user_name').textContent = name;
+        archiveModal.show();
+    }
+
+    function submitArchive() {
+        const form = document.getElementById('archiveForm');
+        form.action = `/admin/users/${currentActionUserId}/archive`;
+        archiveModal.hide();
+        form.submit();
+    }
+
+    // ── RESTORE ──
+    function openRestoreModal(id, name) {
+        currentActionUserId = id;
+        document.getElementById('restore_user_name').textContent = name;
+        restoreModal.show();
+    }
+
+    function submitRestore() {
+        const form = document.getElementById('restoreForm');
+        form.action = `/admin/users/${currentActionUserId}/restore`;
+        restoreModal.hide();
+        form.submit();
+    }
 
     // ── ADD USER ──
 

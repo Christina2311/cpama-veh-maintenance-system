@@ -538,6 +538,7 @@
                     <option value="">All Status</option>
                     <option value="completed"   {{ request('status') === 'completed'   ? 'selected' : '' }}>Completed</option>
                     <option value="in-progress" {{ request('status') === 'in-progress' ? 'selected' : '' }}>In Progress</option>
+                    <option value="overdue"   {{ request('status') === 'overdue'   ? 'selected' : '' }}>Overdue</option>
                     <option value="assigned"    {{ request('status') === 'assigned'    ? 'selected' : '' }}>Assigned</option>
                 </select>
 
@@ -640,7 +641,6 @@
                         <tr>
                             <td colspan="6">
                                 <div class="empty-state">
-                                    <div style="font-size:40px; margin-bottom:10px;">🔧</div>
                                     <div>No maintenance records found.</div>
                                 </div>
                             </td>

@@ -300,7 +300,13 @@ class AdminController extends Controller
         }
 
         if ($request->status) {
-            $query->where('status', $request->status);
+            if ($request->status === 'overdue') {
+                // Overdue = not completed AND appointment date has passed
+                $query->whereNotIn('status', ['completed'])
+                      ->whereHas('appointment', fn($q) => $q->where('appointment_date', '<', Carbon::today()));
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
         if ($request->year && $request->month && $request->day) {
