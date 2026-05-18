@@ -125,7 +125,7 @@
             .login-title { font-size: 22px; }
         }
 
-        /* PHONE (480px and below) */
+        /* PHONE */
         @media (max-width: 480px) {
             .login-wrapper {
                 position: relative;

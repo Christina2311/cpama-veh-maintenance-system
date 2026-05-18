@@ -34,92 +34,51 @@
             }
 
             /* ── SIDEBAR ── */
-            .sidebar {
-                width: 210px;
-                min-width: 210px;
-                height: 100vh;
-                background: var(--bg-primary);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 24px 14px;
-                position: sticky;
-                top: 0;
-                flex-shrink: 0;
-            }
+        .sidebar {
+            width: 210px;
+            min-width: 210px;
+            flex-shrink: 0;
+            height: 100vh;
+            background: #0F0F40;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px 14px;
+            position: sticky;
+            top: 0;
+        }
 
-            .sidebar-logo {
-                width: 90px;
-                height: 90px;
-                border-radius: 50%;
-                object-fit: cover;
-                margin-bottom: 10px;
-            }
+        .sidebar-logo { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
 
-            .sidebar-title {
-                font-size: 11px;
-                font-weight: 800;
-                text-transform: uppercase;
-                color: var(--text-neutral);
-                text-align: center;
-                letter-spacing: 0.5px;
-                line-height: 1.4;
-                margin-bottom: 6px;
-            }
+        .sidebar-title {
+            font-size: 11px; font-weight: 800; text-transform: uppercase;
+            color: white; text-align: center; letter-spacing: 0.5px; line-height: 1.3;
+        }
 
-            .sidebar-admin {
-                font-size: 12px;
-                font-weight: 700;
-                color: rgba(255,255,255,0.85);
-                margin-bottom: 20px;
-                text-align: center;
-            }
+        .sidebar-admin { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.9); }
 
-            .nav-item .nav-link {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                color: var(--text-neutral);
-                font-size: 12px;
-                font-weight: 600;
-                padding: 10px 14px;
-                border-radius: 8px;
-                border: 1px solid var(--border-neutral);
-                background-color: rgba(255,255,255,0.08);
-                transition: background-color 0.2s;
-                text-decoration: none;
-            }
+        .nav-item .nav-link {
+            display: flex; align-items: center; gap: 10px; color: white;
+            font-size: 12px; font-weight: 600; padding: 9px 14px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background-color: rgba(255,255,255,0.08); transition: background-color 0.2s;
+            text-decoration: none;
+        }
 
-            .nav-item .nav-link:hover,
-            .nav-item .nav-link.active {
-                background-color: rgba(255,255,255,0.22);
-                color: var(--text-neutral);
-            }
+        .nav-item .nav-link:hover, .nav-item .nav-link.active {
+            background-color: rgba(255,255,255,0.22); color: white;
+        }
 
-            .nav-item .nav-link img {
-                width: 15px;
-                height: 15px;
-                filter: brightness(0) invert(1);
-                flex-shrink: 0;
-            }
+        .nav-item .nav-link img { width: 15px; height: 15px; filter: brightness(0) invert(1); flex-shrink: 0; }
 
-            .logout-btn {
-                font-size: 12px;
-                font-weight: 600;
-                color: var(--text-neutral);
-                background: transparent;
-                border: 1px solid rgba(255,255,255,0.3);
-                border-radius: 8px;
-                padding: 9px 14px;
-                width: 100%;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                transition: background-color 0.2s;
-            }
-            .logout-btn:hover { background-color: rgba(255,255,255,0.15); }
+        .logout-btn {
+            font-size: 12px; font-weight: 600; color: white; background: transparent;
+            border: 1px solid rgba(255,255,255,0.3); border-radius: 8px;
+            padding: 9px 14px; width: 100%; transition: background-color 0.2s; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .logout-btn:hover { background-color: rgba(255,255,255,0.15); }
+
 
             /* ── MAIN ── */
             .main-content {
@@ -532,52 +491,52 @@
         <div class="d-flex" style="height: 100vh;">
 
             <!-- ── SIDEBAR ── -->
-            <div class="sidebar">
-                <img src="{{ asset('images/veh_main_logo.png') }}" alt="Logo" class="sidebar-logo">
-                <div class="sidebar-title">CPAMA VEH MAINTENANCE</div>
-                <div class="sidebar-admin">Admin: {{ auth()->user()->name }}</div>
+    <div class="sidebar">
+        <img src="{{ asset('images/veh_main_logo.png') }}" alt="Logo" class="sidebar-logo mb-2">
+        <div class="sidebar-title mb-2">CPAMA VEH MAINTENANCE</div>
+        <div class="sidebar-admin mb-3">Admin: {{ auth()->user()->name }}</div>
 
-                <ul class="nav flex-column w-100 gap-2 flex-grow-1">
-                    <li class="nav-item">
-                        <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                            <img src="{{ asset('images/dashboard_icon.png') }}" alt=""> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.vehicles') }}" class="nav-link">
-                            <img src="{{ asset('images/vehicles_icon.png') }}" alt=""> Vehicles
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.appointments') }}" class="nav-link">
-                            <img src="{{ asset('images/appointment_icon.png') }}" alt=""> Appointments
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.maintenance') }}" class="nav-link">
-                            <img src="{{ asset('images/maintenance_icon.png') }}" alt=""> Maintenance
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.reports') }}" class="nav-link active">
-                            <img src="{{ asset('images/reports_icon.png') }}" alt=""> Reports
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('admin.users') }}" class="nav-link">
-                            <img src="{{ asset('images/user_icon.png') }}" alt=""> User Management
-                        </a>
-                    </li>
-                </ul>
+        <ul class="nav flex-column w-100 gap-2 flex-grow-1">
+            <li class="nav-item">
+                <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                    <img src="{{ asset('images/dashboard_icon.png') }}" alt=""> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.vehicles') }}" class="nav-link">
+                    <img src="{{ asset('images/vehicles_icon.png') }}" alt=""> Vehicles
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.appointments') }}" class="nav-link">
+                    <img src="{{ asset('images/appointment_icon.png') }}" alt=""> Appointments
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.maintenance') }}" class="nav-link">
+                    <img src="{{ asset('images/maintenance_icon.png') }}" alt=""> Maintenance
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.reports') }}" class="nav-link active">
+                    <img src="{{ asset('images/reports_icon.png') }}" alt=""> Reports
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.users') }}" class="nav-link">
+                    <img src="{{ asset('images/user_icon.png') }}" alt=""> User Management
+                </a>
+            </li>
+        </ul>
 
-                <form method="POST" action="{{ route('logout') }}" class="w-100 mt-2">
-                    @csrf
-                    <button type="submit" class="logout-btn">
-                        <img src="{{ asset('images/logout_icon.png') }}" style="width:14px;height:14px;filter:brightness(0) invert(1);">
-                        Logout
-                    </button>
-                </form>
-            </div>
+        <form method="POST" action="{{ route('logout') }}" class="w-100 mt-2">
+            @csrf
+            <button type="submit" class="logout-btn">
+                <img src="{{ asset('images/logout_icon.png') }}" style="width:15px; height:15px; filter: brightness(0) invert(1);">
+                Logout
+            </button>
+        </form>
+    </div>
 
             <!-- ── MAIN CONTENT ── -->
             <div class="main-content flex-grow-1">

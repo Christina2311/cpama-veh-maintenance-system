@@ -249,6 +249,7 @@
             .d-flex.gap-2.mb-4,
             .d-flex.gap-3 { flex-wrap: wrap !important; gap: 8px !important; }
 
+            .add-vehicle-btn { width: 100% !important; justify-content: center !important; }
             /* Search input full width */
             .input-group { width: 100% !important; }
 
@@ -366,7 +367,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('admin.reports') }}" class="nav-link">
                     <img src="{{ asset('images/reports_icon.png') }}" alt=""> Reports
                 </a>
             </li>

@@ -34,10 +34,10 @@ class AdminController extends Controller
             'inProgressAppointments' => Appointment::where('status', 'in-progress')->count(),
             'completedTasks'         => Task::where('status', 'completed')->count(),
             'totalRevenue'           => Appointment::whereIn('status', ['completed', 'in-progress'])->sum('total_amount'),
-            'upcomingCount'          => Appointment::whereIn('status', ['pending', 'confirmed'])
-                                            ->where('appointment_date', '>=', $today)->count(),
-            'overdueCount'           => Appointment::whereIn('status', ['pending', 'confirmed'])
-                                            ->where('appointment_date', '<', $today)->count(),
+            'upcomingCount' => Task::whereIn('status', ['assigned', 'in-progress'])->count(),
+            'overdueCount'  => Task::whereNotIn('status', ['completed'])
+                       ->whereHas('appointment', fn($q) => $q->where('appointment_date', '<', $today))
+                       ->count(),
         ];
 
         $alerts = Appointment::with('vehicle')
@@ -247,17 +247,21 @@ class AdminController extends Controller
     public function storeAppointment(Request $request)
     {
         $request->validate([
-            'customer_id'       => 'required|exists:users,id',
-            'vehicle_id'        => 'required|exists:vehicles,id',
-            'service_id'        => 'required|exists:services,id',
-            'appointment_date'  => 'required|date|after_or_equal:today',
-            'appointment_time'  => 'required',
-            'notes'             => 'nullable|string|max:500',
+            'customer_id'      => 'required|exists:users,id',
+            'vehicle_name'     => 'required|string|max:100',
+            'plate_no'         => 'required|string|max:20',
+            'license_no'       => 'required|string|max:50',
+            'service_id'       => 'required|exists:services,id',
+            'appointment_date' => 'required|date|after_or_equal:today',
+            'appointment_time' => 'required',
+            'notes'            => 'nullable|string|max:500',
         ]);
 
         $appointment = Appointment::create([
             'customer_id'      => $request->customer_id,
-            'vehicle_id'       => $request->vehicle_id,
+            'vehicle_name'     => $request->vehicle_name,
+            'plate_no'         => $request->plate_no,
+            'license_no'       => $request->license_no,
             'appointment_date' => $request->appointment_date,
             'appointment_time' => $request->appointment_time,
             'notes'            => $request->notes,
@@ -295,8 +299,8 @@ class AdminController extends Controller
     {
         $query = Task::with(['appointment.vehicle', 'appointment.customer', 'service', 'mechanic']);
 
-        if ($request->vehicle_id) {
-            $query->whereHas('appointment', fn($q) => $q->where('vehicle_id', $request->vehicle_id));
+        if ($request->vehicle_name) {
+            $query->whereHas('appointment', fn($q) => $q->where('vehicle_name', $request->vehicle_name));
         }
 
         if ($request->status) {

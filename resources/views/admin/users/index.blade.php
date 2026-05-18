@@ -113,6 +113,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
             min-height: 90px;
+            height: 100%;
         }
 
         .stat-card-label { 
@@ -127,7 +128,8 @@
             opacity: 0.7; 
         }
 
-        .stat-card-value { z            font-size: 30px; 
+        .stat-card-value {
+            font-size: 30px; 
             font-weight: 800; 
             color: #0D0D32; 
         }
@@ -383,11 +385,13 @@
                 gap: 10px !important; 
             }
 
-            .row.g-3 > .col-4 { 
+            .row.g-3 > .col-3 { 
                 width: 50% !important; 
                 flex: 0 0 50% !important; 
                 max-width: 50% !important; 
             }
+
+            .stat-card { min-height: 90px !important; }
 
             /* Tables scroll horizontally */
             .table-card, .panel { overflow-x: auto !important; }
@@ -471,7 +475,7 @@
 
             /* Stat cards: 1 column */
             .stat-grid { grid-template-columns: 1fr !important; }
-            .row.g-3 > .col-4 { 
+            .row.g-3 > .col-3 { 
                 width: 100% !important; 
                 flex: 0 0 100% !important; 
                 max-width: 100% !important; 
@@ -483,6 +487,19 @@
                 flex-direction: column !important; 
                 align-items: flex-start !important; 
                 gap: 10px !important; 
+            }
+
+            /* Header stacks: title on top, button full width below */
+            .d-flex.justify-content-between.align-items-center.mb-4 {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+            }
+            .add-user-btn {
+                width: 100% !important;
+                display: flex !important;
+                justify-content: center !important;
+                text-align: center !important;
             }
 
             .btn-download { 
@@ -954,6 +971,7 @@
     @csrf
     <input type="hidden" name="name"                  id="form_name">
     <input type="hidden" name="email"                 id="form_email">
+    <input type="hidden" name="phone"                 id="form_phone">
     <input type="hidden" name="role"                  id="form_role">
     <input type="hidden" name="status"                id="form_status">
     <input type="hidden" name="password"              id="form_password">

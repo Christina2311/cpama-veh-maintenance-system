@@ -352,7 +352,19 @@
 
             /* Top bar stacks */
             .top-bar { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
-            .btn-download { width: 100% !important; justify-content: center !important; }
+
+            /* Header stacks: title on top, button full width below */
+            .d-flex.justify-content-between.align-items-center.mb-4 {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+            }
+            .book-btn {
+                width: 100% !important;
+                display: flex !important;
+                justify-content: center !important;
+                text-align: center !important;
+            }
 
             /* Revenue card stacks */
             .revenue-card { flex-direction: column !important; gap: 8px !important; }
@@ -479,9 +491,19 @@
                             <tr>
                                 <td>{{ $appt->customer->name ?? '—' }}</td>
                                 <td>
-                                    @if($appt->vehicle)
+                                    @if($appt->vehicle_name)
+                                        {{ $appt->vehicle_name }}
+                                        @if($appt->plate_no ?? $appt->vehicle?->license_plate)
+                                            <div style="font-size:11px; color:#6c757d;"><span style="font-weight:600;">Plate:</span> {{ $appt->plate_no ?? $appt->vehicle?->license_plate }}</div>
+                                        @endif
+                                        @if($appt->license_no)
+                                            <div style="font-size:11px; color:#6c757d;"><span style="font-weight:600;">License:</span> {{ $appt->license_no }}</div>
+                                        @endif
+                                    @elseif($appt->vehicle)
                                         {{ $appt->vehicle->make ?? '' }} {{ $appt->vehicle->model ?? '' }}
-                                        <div style="font-size:11px; color:#6c757d;">{{ $appt->vehicle->license_plate ?? '' }}</div>
+                                        @if($appt->vehicle->license_plate)
+                                            <div style="font-size:11px; color:#6c757d;"><span style="font-weight:600;">Plate:</span> {{ $appt->vehicle->license_plate }}</div>
+                                        @endif
                                     @else
                                         —
                                     @endif
@@ -511,9 +533,9 @@
                                         onclick="openViewModal(
                                             {{ $appt->id }},
                                             '{{ addslashes($appt->customer->name ?? '—') }}',
-                                            '{{ addslashes($appt->customer->valid_id ?? 'Not provided') }}',
-                                            '{{ addslashes(($appt->vehicle->make ?? '') . ' ' . ($appt->vehicle->model ?? '')) }}',
-                                            '{{ addslashes($appt->vehicle->license_plate ?? '—') }}',
+                                            '{{ addslashes($appt->license_no ?? 'Not provided') }}',
+                                            '{{ addslashes($appt->vehicle_name ?? '—') }}',
+                                            '{{ addslashes($appt->plate_no ?? '—') }}',
                                             '{{ addslashes($appt->appointmentServices ? $appt->appointmentServices->map(fn($s) => $s->service->service_name ?? '')->join(', ') : '—') }}',
                                             '{{ $appt->appointment_date ? \Carbon\Carbon::parse($appt->appointment_date)->format('M d, Y') : '—' }}',
                                             '{{ $appt->appointment_time ? \Carbon\Carbon::parse($appt->appointment_time)->format('h:i A') : '—' }}',
@@ -596,11 +618,15 @@
                 <div class="row g-3">
                     <div class="col-6">
                         <div class="modal-label">Vehicle</div>
-                        <div class="status-select-wrapper">
-                            <select id="book_vehicle" class="modal-select">
-                                <option value="">Select Vehicle</option>
-                            </select>
-                        </div>
+                        <input type="text" id="book_vehicle" class="modal-input" placeholder="e.g. Toyota Vios">
+                    </div>
+                    <div class="col-6">
+                        <div class="modal-label">Plate Number</div>
+                        <input type="text" id="book_plate" class="modal-input" placeholder="e.g. ABC-1234">
+                    </div>
+                    <div class="col-6">
+                        <div class="modal-label">Driver's License No.</div>
+                        <input type="text" id="book_license" class="modal-input" placeholder="e.g. N01-23-456789">
                     </div>
                     <div class="col-6">
                         <div class="modal-label">Maintenance Type</div>
@@ -643,6 +669,24 @@
             <div class="modal-footer d-flex justify-content-between">
                 <button class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
                 <button class="btn-create" onclick="submitBooking()">Book Appointment</button>
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<!-- ══════════════════════════════════════════ -->
+<!-- MODAL — VALIDATION ALERT                 -->
+<!-- ══════════════════════════════════════════ -->
+<div class="modal fade" id="alertModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content dialog-card">
+            <div class="modal-header">
+                <h5 class="modal-title">Required Fields</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">Please fill in all required fields.</div>
+            <div class="modal-footer">
+                <button class="btn-ok" data-bs-dismiss="modal">OK</button>
             </div>
         </div>
     </div>
@@ -716,7 +760,7 @@
                         <div class="view-value" id="view_customer">—</div>
                     </div>
                     <div class="col-6">
-                        <div class="view-label">Valid ID</div>
+                        <div class="view-label">Driver's License No.</div>
                         <div class="view-value" id="view_valid_id">—</div>
                     </div>
                     <div class="col-6">
@@ -761,7 +805,9 @@
 <form id="bookingForm" method="POST" action="{{ route('admin.appointments.store') }}" style="display:none;">
     @csrf
     <input type="hidden" name="customer_id"          id="f_customer_id">
-    <input type="hidden" name="vehicle_id"            id="f_vehicle_id">
+    <input type="hidden" name="vehicle_name"          id="f_vehicle_name">
+    <input type="hidden" name="plate_no"              id="f_plate_no">
+    <input type="hidden" name="license_no"            id="f_license_no">
     <input type="hidden" name="service_id"            id="f_service_id">
     <input type="hidden" name="appointment_date"      id="f_date">
     <input type="hidden" name="appointment_time"      id="f_time">
@@ -780,63 +826,81 @@
     const bookConfirmModal = new bootstrap.Modal(document.getElementById('bookConfirmModal'));
     const editStatusModal  = new bootstrap.Modal(document.getElementById('editStatusModal'));
     const viewModal        = new bootstrap.Modal(document.getElementById('viewModal'));
+    const alertModal       = new bootstrap.Modal(document.getElementById('alertModal'));
  
     // ── SEARCH CUSTOMERS ──
     const allUsers = @json($customers ?? []);
- 
+
+    // Store vehicles in a lookup map keyed by user ID to avoid breaking HTML attributes with JSON double-quotes
+    const vehicleMap = {};
+    allUsers.forEach(u => { vehicleMap[u.id] = u.vehicles ?? []; });
+
     document.getElementById('userSearch').addEventListener('input', function () {
         const q = this.value.toLowerCase();
         const dropdown = document.getElementById('userDropdown');
         if (!q) { dropdown.style.display = 'none'; return; }
- 
+
         const filtered = allUsers.filter(u => u.name.toLowerCase().includes(q));
         if (!filtered.length) { dropdown.style.display = 'none'; return; }
- 
-        dropdown.innerHTML = filtered.map(u =>
-            `<div class="user-dropdown-item" onclick="selectUser(${u.id}, '${u.name.replace(/'/g, "\\'")}', ${JSON.stringify(u.vehicles ?? [])})">${u.name}</div>`
-        ).join('');
+
+        dropdown.innerHTML = filtered.map(u => {
+            const safeId   = u.id;
+            const safeName = u.name.replace(/'/g, "\\'");
+            // Only pass id and name — vehicles are fetched from vehicleMap to avoid double-quote injection
+            return `<div class="user-dropdown-item" onmousedown="event.preventDefault(); selectUser(${safeId}, '${safeName}')">${u.name}</div>`;
+        }).join('');
         dropdown.style.display = 'block';
     });
- 
-    function selectUser(id, name, vehicles) {
+
+    function selectUser(id, name) {
         document.getElementById('userSearch').value = name;
         document.getElementById('selected_user_id').value = id;
         document.getElementById('userDropdown').style.display = 'none';
- 
-        const vehicleSelect = document.getElementById('book_vehicle');
-        vehicleSelect.innerHTML = '<option value="">Select Vehicle</option>';
-        vehicles.forEach(v => {
-            vehicleSelect.innerHTML += `<option value="${v.id}">${v.make ?? ''} ${v.model ?? ''} - ${v.license_plate ?? ''}</option>`;
-        });
+
+        // Auto-fill vehicle fields from customer record
+        const vehicles = vehicleMap[id] || [];
+        if (vehicles.length > 0) {
+            const v = vehicles[0];
+            document.getElementById('book_vehicle').value = ((v.make || '') + ' ' + (v.model || '')).trim();
+            document.getElementById('book_plate').value   = v.license_plate || '';
+        } else {
+            document.getElementById('book_vehicle').value = '';
+            document.getElementById('book_plate').value   = '';
+        }
+        document.getElementById('book_license').value = '';
     }
- 
+
     document.addEventListener('click', function(e) {
-        if (!e.target.closest('.search-user-wrapper') && !e.target.closest('#userDropdown')) {
+        if (!e.target.closest('.search-user-wrapper')) {
             document.getElementById('userDropdown').style.display = 'none';
         }
     });
- 
+
     // ── SUBMIT BOOKING ──
     function submitBooking() {
-        const customerId = document.getElementById('selected_user_id').value;
-        const vehicleId  = document.getElementById('book_vehicle').value;
-        const serviceId  = document.getElementById('book_service').value;
-        const date       = document.getElementById('book_date').value;
-        const time       = document.getElementById('book_time').value;
-        const notes      = document.getElementById('book_notes').value;
- 
-        if (!customerId || !vehicleId || !serviceId || !date || !time) {
-            alert('Please fill in all required fields.');
+        const customerId  = document.getElementById('selected_user_id').value;
+        const vehicleName = document.getElementById('book_vehicle').value.trim();
+        const plateNo     = document.getElementById('book_plate').value.trim();
+        const licenseNo   = document.getElementById('book_license').value.trim();
+        const serviceId   = document.getElementById('book_service').value;
+        const date        = document.getElementById('book_date').value;
+        const time        = document.getElementById('book_time').value;
+        const notes       = document.getElementById('book_notes').value;
+
+        if (!customerId || !vehicleName || !plateNo || !licenseNo || !serviceId || !date || !time) {
+            alertModal.show();
             return;
         }
- 
-        document.getElementById('f_customer_id').value = customerId;
-        document.getElementById('f_vehicle_id').value  = vehicleId;
-        document.getElementById('f_service_id').value  = serviceId;
-        document.getElementById('f_date').value        = date;
-        document.getElementById('f_time').value        = time;
-        document.getElementById('f_notes').value       = notes;
- 
+
+        document.getElementById('f_customer_id').value  = customerId;
+        document.getElementById('f_vehicle_name').value = vehicleName;
+        document.getElementById('f_plate_no').value     = plateNo;
+        document.getElementById('f_license_no').value   = licenseNo;
+        document.getElementById('f_service_id').value   = serviceId;
+        document.getElementById('f_date').value         = date;
+        document.getElementById('f_time').value         = time;
+        document.getElementById('f_notes').value        = notes;
+
         bookModal.hide();
         document.getElementById('bookingForm').submit();
     }
